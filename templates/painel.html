@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Painel do Barbeiro</title>
+</head>
+<body>
+    <h2>Painel de Agendamentos 💈</h2>
+    <a href="/logout">Sair</a>
+    <table border="1" cellpadding="5" cellspacing="0">
+        <tr>
+            <th>ID</th>
+            <th>Nome</th>
+            <th>Telefone</th>
+            <th>Serviço</th>
+            <th>Data</th>
+            <th>Hora</th>
+        </tr>
+        {% for ag in agendamentos %}
+        <tr>
+            <td>{{ ag[0] }}</td>
+            <td>{{ ag[1] }}</td>
+            <td>{{ ag[2] }}</td>
+            <td>{{ ag[3] }}</td>
+            <td>{{ ag[4] }}</td>
+            <td>{{ ag[5] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

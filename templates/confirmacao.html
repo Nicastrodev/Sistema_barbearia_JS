@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agendamento Confirmado - Barbearia Elite</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="{{ url_for('index') }}" class="logo">
+                <span class="logo-icon">💈</span>
+                Barbearia Elite
+            </a>
+            <div class="nav-links">
+                <a href="{{ url_for('index') }}" class="nav-link">
+                    🏠 Início
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Container de Confirmação -->
+    <main class="confirmation-container">
+        <div class="confirmation-card">
+            <div class="success-icon">✅</div>
+            <h2>Agendamento Confirmado!</h2>
+            
+            <p style="font-size: 1.1rem; margin-bottom: 2rem;">
+                Parabéns, <strong>{{ nome }}</strong>! Seu agendamento foi realizado com sucesso.
+            </p>
+
+            <div class="appointment-details">
+                <h3 style="color: #d4af37; margin-bottom: 1rem;">📋 Detalhes do Agendamento:</h3>
+                <p><strong>🎯 Serviço:</strong> {{ servico }}</p>
+                <p><strong>📅 Data:</strong> {{ data }}</p>
+                <p><strong>🕐 Horário:</strong> {{ hora }}</p>
+                <p style="margin-top: 1rem; color: #666; font-size: 0.9rem;">
+                    <strong>⚠️ Importante:</strong> Chegue com 10 minutos de antecedência
+                </p>
+            </div>
+
+            <div style="margin: 2rem 0;">
+                <p style="margin-bottom: 1rem;">
+                    Para confirmar ou alterar seu agendamento, entre em contato conosco:
+                </p>
+                <a href="https://wa.me/5511999999999?text=Olá! Gostaria de confirmar meu agendamento para {{ data }} às {{ hora }}. Nome: {{ nome }}" 
+                   target="_blank" class="whatsapp-btn">
+                    📱 Falar no WhatsApp
+                </a>
+            </div>
+
+            <div style="background: #e8f4f8; padding: 1.5rem; border-radius: 10px; margin-top: 2rem;">
+                <h4 style="color: #2c5aa0; margin-bottom: 0.5rem;">📍 Endereço da Barbearia:</h4>
+                <p style="color: #666; margin: 0;">
+                    Rua das Flores, 123 - Centro<br>
+                    São Paulo - SP, CEP: 01234-567
+                </p>
+            </div>
+
+            <a href="{{ url_for('index') }}" class="back-btn" style="margin-top: 2rem;">
+                ⬅️ Fazer Novo Agendamento
+            </a>
+        </div>
+    </main>
+</body>
+</html>

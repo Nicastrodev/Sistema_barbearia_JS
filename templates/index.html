@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barbearia Online - Agendamento</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="{{ url_for('index') }}" class="logo">
+                <span class="logo-icon">💈</span>
+                Barbearia Elite
+            </a>
+            <div class="nav-links">
+                <a href="{{ url_for('login') }}" class="nav-link admin-btn">
+                    🔐 Área Admin
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header Principal -->
+    <header class="main-header">
+        <h1>✂️ Barbearia Elite</h1>
+        <p>Agende seu corte de forma rápida e profissional</p>
+    </header>
+
+    <!-- Container Principal -->
+    <main class="container">
+        <div class="form-card">
+            <form method="POST" id="agendamentoForm">
+                <div class="form-group">
+                    <label for="nome">👤 Nome Completo:</label>
+                    <input type="text" id="nome" name="nome" required 
+                           placeholder="Digite seu nome completo">
+                </div>
+
+                <div class="form-group">
+                    <label for="telefone">📱 Telefone/WhatsApp:</label>
+                    <input type="tel" id="telefone" name="telefone" required 
+                           placeholder="(11) 99999-9999">
+                </div>
+
+                <div class="form-group">
+                    <label for="servico">💇‍♂️ Serviço Desejado:</label>
+                    <select id="servico" name="servico" required>
+                        <option value="">Selecione o serviço...</option>
+                        <option value="Corte Simples">✂️ Corte Simples - R$ 30,00</option>
+                        <option value="Corte + Barba">✂️🧔 Corte + Barba - R$ 50,00</option>
+                        <option value="Barba">🧔 Apenas Barba - R$ 25,00</option>
+                        <option value="Corte Premium">✨ Corte Premium - R$ 45,00</option>
+                        <option value="Pacote Completo">🎩 Pacote Completo - R$ 70,00</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="data">📅 Data:</label>
+                    <input type="date" id="data" name="data" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="hora">🕐 Horário:</label>
+                    <select id="hora" name="hora" required>
+                        <option value="">Selecione o horário...</option>
+                        <option value="08:00">08:00</option>
+                        <option value="09:00">09:00</option>
+                        <option value="10:00">10:00</option>
+                        <option value="11:00">11:00</option>
+                        <option value="14:00">14:00</option>
+                        <option value="15:00">15:00</option>
+                        <option value="16:00">16:00</option>
+                        <option value="17:00">17:00</option>
+                        <option value="18:00">18:00</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn-primary" id="btnAgendar">
+                    📋 Confirmar Agendamento
+                </button>
+            </form>
+        </div>
+    </main>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

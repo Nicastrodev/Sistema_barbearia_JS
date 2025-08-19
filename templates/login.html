@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Área Admin - Barbearia Elite</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <!-- Container de Login -->
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-icon">🔐</div>
+            <h2>Área Restrita</h2>
+            <p style="color: #666; margin-bottom: 2rem;">
+                Acesso exclusivo para administradores
+            </p>
+            
+            <form method="POST" id="loginForm">
+                <div class="form-group">
+                    <label for="senha">🔑 Senha de Acesso:</label>
+                    <input type="password" 
+                           id="senha" 
+                           name="senha" 
+                           placeholder="Digite a senha de administrador" 
+                           required>
+                </div>
+                
+                <button type="submit" class="btn-primary" id="btnLogin">
+                    🚀 Entrar no Sistema
+                </button>
+            </form>
+            
+            {% if erro %}
+            <div class="error-message">
+                ⚠️ {{ erro }}
+            </div>
+            {% endif %}
+            
+            <div style="margin-top: 2rem; text-align: center;">
+                <a href="{{ url_for('index') }}" 
+                   style="color: #666; text-decoration: none; font-size: 0.9rem;">
+                    ← Voltar ao site principal
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

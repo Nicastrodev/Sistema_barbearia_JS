@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agendamentos - Painel Admin</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="{{ url_for('index') }}" class="logo">
+                <span class="logo-icon">💈</span>
+                Barbearia Elite
+            </a>
+            <div class="nav-links">
+                <a href="{{ url_for('index') }}" class="nav-link">🏠 Início</a>
+                <a href="{{ url_for('logout') }}" class="logout-btn">🚪 Sair</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Container de Agendamentos -->
+    <main class="appointments-container">
+        <div class="appointments-header">
+            <h1 class="appointments-title">📅 Painel de Agendamentos</h1>
+        </div>
+
+        {% if agendamentos_por_data %}
+            {% for data, ags in agendamentos_por_data.items() %}
+                <h2 style="margin-top: 2rem; color:#333;">📌 {{ data }}</h2>
+                <table class="table-container">
+                    <thead>
+                        <tr>
+                            <th>🕐 Horário</th>
+                            <th>👤 Nome</th>
+                            <th>💇 Serviço</th>
+                            <th>📱 Telefone</th>
+                            <th>📞 Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ag in ags %}
+                        <tr>
+                            <td>{{ ag.hora }}</td>
+                            <td>{{ ag.nome }}</td>
+                            <td>{{ ag.servico }}</td>
+                            <td>{{ ag.telefone }}</td>
+                            <td>
+                                <a href="https://wa.me/55{{ ag.telefone|replace('(', '')|replace(')', '')|replace('-', '')|replace(' ', '') }}?text=Olá {{ ag.nome }}! Confirmando seu agendamento para {{ ag.data }} às {{ ag.hora }} - {{ ag.servico }}" 
+                                   target="_blank"
+                                   style="background: #25d366; color: white; padding: 0.4rem 0.8rem; border-radius: 6px; text-decoration: none; font-size: 0.8rem;">
+                                    📲 WhatsApp
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endfor %}
+        {% else %}
+            <div style="text-align: center; padding: 4rem; color: #999;">
+                <div style="font-size: 4rem; margin-bottom: 1rem;">📭</div>
+                <h3>Nenhum agendamento encontrado</h3>
+                <p>Quando os clientes fizerem agendamentos, eles aparecerão aqui.</p>
+                <a href="{{ url_for('index') }}" class="nav-link" style="margin-top: 2rem; display: inline-block;">
+                    ➕ Ir para página de agendamentos
+                </a>
+            </div>
+        {% endif %}
+    </main>
+
+    <!-- Passando os dados para o JS -->
+    <script>
+    window.dadosAgendamentos = {{ agendamentos_por_data|tojson }};
+</script>
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+
