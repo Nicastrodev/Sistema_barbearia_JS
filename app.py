@@ -2,10 +2,11 @@ from flask import Flask, render_template, request, redirect, url_for, session, j
 from flask_sqlalchemy import SQLAlchemy
 import os
 from collections import defaultdict
-from datetime import datetime
+from datetime import datetime, time, timedelta
 
+# Configuração do Flask
 app = Flask(__name__)
-app.secret_key = "chave_super_secreta"  # Necessário para login
+app.secret_key = "chave_super_secreta"
 
 # Configuração do banco de dados SQLite
 base_dir = os.path.abspath(os.path.dirname(__file__))
@@ -19,12 +20,38 @@ class Agendamento(db.Model):
     nome = db.Column(db.String(100), nullable=False)
     telefone = db.Column(db.String(20), nullable=False)
     servico = db.Column(db.String(100), nullable=False)
-    data = db.Column(db.String(20), nullable=False)  # YYYY-MM-DD
+    data = db.Column(db.String(20), nullable=False)
     hora = db.Column(db.String(20), nullable=False)
 
-# Cria o banco de dados se não existir
+class Servico(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    nome = db.Column(db.String(100), nullable=False, unique=True)
+    preco = db.Column(db.Float, nullable=False)
+    descricao = db.Column(db.String(255), nullable=True)
+
+class HorarioConfiguracao(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    dia_semana = db.Column(db.String(20), nullable=False, unique=True)
+    abertura = db.Column(db.String(5), nullable=False)
+    fechamento = db.Column(db.String(5), nullable=False)
+
+# Cria o banco de dados e as tabelas se não existirem
 with app.app_context():
     db.create_all()
+    
+    if Servico.query.count() == 0:
+        servicos_iniciais = [
+            {"nome": "Corte Simples", "preco": 30.00, "descricao": "✂️ Corte Simples - R$ 30,00"},
+            {"nome": "Corte + Barba", "preco": 50.00, "descricao": "✂️🧔 Corte + Barba - R$ 50,00"},
+            {"nome": "Barba", "preco": 25.00, "descricao": "🧔 Apenas Barba - R$ 25,00"},
+            {"nome": "Corte Premium", "preco": 45.00, "descricao": "✨ Corte Premium - R$ 45,00"},
+            {"nome": "Pacote Completo", "preco": 70.00, "descricao": "🎩 Pacote Completo - R$ 70,00"},
+        ]
+        for s in servicos_iniciais:
+            servico = Servico(nome=s["nome"], preco=s["preco"], descricao=s["descricao"])
+            db.session.add(servico)
+        db.session.commit()
+        print("Serviços iniciais populados no banco de dados.")
 
 # --- ROTA PRINCIPAL (Agendamento) ---
 @app.route("/", methods=["GET", "POST"])
@@ -35,60 +62,49 @@ def index():
         servico = request.form["servico"]
         data = request.form["data"]
         hora = request.form["hora"]
-
-        novo_agendamento = Agendamento(
-            nome=nome,
-            telefone=telefone,
-            servico=servico,
-            data=data,
-            hora=hora
-        )
+        
+        novo_agendamento = Agendamento(nome=nome, telefone=telefone, servico=servico, data=data, hora=hora)
         db.session.add(novo_agendamento)
         db.session.commit()
-
+        
         return redirect(url_for("confirmacao", nome=nome, servico=servico, data=data, hora=hora))
 
-    return render_template("index.html")
+    servicos = Servico.query.order_by(Servico.nome).all()
+    return render_template("index.html", servicos=servicos)
 
-# --- CONFIRMAÇÃO ---
+# --- ROTA DE CONFIRMAÇÃO ---
 @app.route("/confirmacao")
 def confirmacao():
     nome = request.args.get("nome")
     servico = request.args.get("servico")
     data = request.args.get("data")
     hora = request.args.get("hora")
-
-    try:
-        data = datetime.strptime(data, "%Y-%m-%d").strftime("%d/%m/%Y")
-    except:
-        pass
-
     return render_template("confirmacao.html", nome=nome, servico=servico, data=data, hora=hora)
 
-# --- LOGIN ---
+# --- ROTA DE LOGIN ---
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
         senha = request.form["senha"]
-        if senha == "admin007":  # Senha fixa
+        if senha == "admin123":
             session["logado"] = True
             return redirect(url_for("agendamentos"))
         else:
-            return render_template("login.html", erro="Senha incorreta!")
+            return render_template("login.html", erro="Senha incorreta. Tente novamente.")
     return render_template("login.html")
 
-# --- LOGOUT ---
+# --- ROTA DE LOGOUT ---
 @app.route("/logout")
 def logout():
     session.pop("logado", None)
-    return redirect(url_for("login"))
+    return redirect(url_for("index"))
 
-# --- ÁREA ADMIN (Agendamentos) ---
+# --- ROTA: LISTA DE AGENDAMENTOS (ÁREA ADMIN) ---
 @app.route("/agendamentos")
 def agendamentos():
     if not session.get("logado"):
         return redirect(url_for("login"))
-
+    
     lista = Agendamento.query.order_by(Agendamento.data, Agendamento.hora).all()
 
     agendamentos_por_data = defaultdict(list)
@@ -106,30 +122,117 @@ def agendamentos():
             "hora": ag.hora
         })
 
-    import json  # <-- Certifique-se de importar!
+    import json
     return render_template(
         "agendamentos.html",
         agendamentos_por_data=agendamentos_por_data,
         agendamentos_json=json.dumps(agendamentos_por_data, ensure_ascii=False)
     )
 
+# --- ROTA: GERENCIAR SERVIÇOS E HORÁRIOS (ÁREA ADMIN) ---
+@app.route("/gerenciar-servicos", methods=["GET", "POST"])
+def gerenciar_servicos():
+    if not session.get("logado"):
+        return redirect(url_for("login"))
+
+    if request.method == "POST":
+        if request.is_json:
+            # Lógica para salvar os horários
+            data = request.json
+            db.session.query(HorarioConfiguracao).delete()
+            for dia, horarios in data.items():
+                if horarios['aberto']:
+                    nova_config = HorarioConfiguracao(
+                        dia_semana=dia,
+                        abertura=horarios['abertura'],
+                        fechamento=horarios['fechamento']
+                    )
+                    db.session.add(nova_config)
+            
+            db.session.commit()
+            return jsonify({"message": "Configuração de horários salva com sucesso!"})
+        else:
+            # Lógica para adicionar/remover serviços (formulário)
+            acao = request.form.get("acao")
+            
+            if acao == "adicionar":
+                nome = request.form.get("nome")
+                preco = request.form.get("preco")
+                descricao = request.form.get("descricao")
+                if nome and preco:
+                    try:
+                        novo_servico = Servico(nome=nome, preco=float(preco), descricao=descricao)
+                        db.session.add(novo_servico)
+                        db.session.commit()
+                    except:
+                        db.session.rollback()
+            
+            elif acao == "remover":
+                servico_id = request.form.get("servico_id")
+                servico_a_remover = Servico.query.get(servico_id)
+                if servico_a_remover:
+                    db.session.delete(servico_a_remover)
+                    db.session.commit()
+            
+            return redirect(url_for("gerenciar_servicos"))
+
+    # Para GET: renderiza a página com todos os dados
+    servicos = Servico.query.all()
+    
+    dias_semana_ordem = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado", "Domingo"]
+    configuracao_atual = {c.dia_semana: {"abertura": c.abertura, "fechamento": c.fechamento, "aberto": True} 
+                          for c in HorarioConfiguracao.query.all()}
+    configuracao_completa = {dia: configuracao_atual.get(dia, {"abertura": "", "fechamento": "", "aberto": False}) 
+                             for dia in dias_semana_ordem}
+    
+    return render_template("gerenciar_servicos.html", 
+                           servicos=servicos, 
+                           configuracao_completa=configuracao_completa)
+
 # --- API: horários disponíveis ---
 @app.route("/api/horarios/<data>")
 def api_horarios(data):
-    horarios_fixos = ["08:00","09:00","10:00","11:00",
-                      "14:00","15:00","16:00","17:00","18:00"]
     try:
-        data_convertida = datetime.strptime(data, "%Y-%m-%d").strftime("%Y-%m-%d")
-    except:
-        try:
-            data_convertida = datetime.strptime(data, "%d-%m-%Y").strftime("%Y-%m-%d")
-        except:
-            data_convertida = data
+        data_convertida = datetime.strptime(data, "%Y-%m-%d")
+        dia_semana_nome = data_convertida.strftime('%A')
+        dias_em_portugues = {
+            'Monday': 'Segunda', 'Tuesday': 'Terça', 'Wednesday': 'Quarta',
+            'Thursday': 'Quinta', 'Friday': 'Sexta', 'Saturday': 'Sábado',
+            'Sunday': 'Domingo'
+        }
+        dia_semana_pt = dias_em_portugues.get(dia_semana_nome)
+    except ValueError:
+        return jsonify({"erro": "Formato de data inválido"}), 400
 
-    ocupados = [ag.hora for ag in Agendamento.query.filter_by(data=data_convertida).all()]
-    disponiveis = [h for h in horarios_fixos if h not in ocupados]
+    config_do_dia = HorarioConfiguracao.query.filter_by(dia_semana=dia_semana_pt).first()
 
-    return jsonify(disponiveis)
+    if not config_do_dia:
+        return jsonify([])
+
+    abertura = datetime.strptime(config_do_dia.abertura, "%H:%M").time()
+    fechamento = datetime.strptime(config_do_dia.fechamento, "%H:%M").time()
+
+    horarios_disponiveis = []
+    
+    hora_loop = datetime.combine(datetime.min, abertura)
+    fechamento_datetime = datetime.combine(datetime.min, fechamento)
+
+    while hora_loop < fechamento_datetime:
+        horario_str = hora_loop.strftime("%H:%M")
+        horarios_disponiveis.append(horario_str)
+        hora_loop += timedelta(minutes=30)
+    
+    hoje_data = datetime.now().date()
+    hora_atual = datetime.now().time()
+    if data_convertida.date() == hoje_data:
+        horarios_disponiveis = [h for h in horarios_disponiveis if time.fromisoformat(h) > hora_atual]
+
+    agendamentos_do_dia = Agendamento.query.filter_by(data=data).all()
+    horarios_ocupados = [ag.hora for ag in agendamentos_do_dia]
+    
+    horarios_filtrados = [h for h in horarios_disponiveis if h not in horarios_ocupados]
+
+    return jsonify(horarios_filtrados)
 
 if __name__ == "__main__":
     app.run(debug=True)

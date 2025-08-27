@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar - Painel Admin</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="{{ url_for('index') }}" class="logo">
+                <span class="logo-icon">💈</span>
+                Barbearia Elite
+            </a>
+            <div class="nav-links">
+                <a href="{{ url_for('agendamentos') }}" class="nav-link">
+                    📅 Agendamentos
+                </a>
+                <a href="{{ url_for('logout') }}" class="logout-btn">🚪 Sair</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="form-card">
+            <h1>🛠️ Gerenciar Serviços e Horários</h1>
+
+            <div class="section-container">
+                <hr class="separator">
+                <h2 style="margin-bottom: 1.5rem;">Gerenciar Serviços</h2>
+                
+                <form method="POST" action="{{ url_for('gerenciar_servicos') }}" class="add-service-form">
+                    <input type="hidden" name="acao" value="adicionar">
+                    <h3>Adicionar Novo Serviço</h3>
+                    <div class="form-group">
+                        <label for="nome">Nome do Serviço:</label>
+                        <input type="text" id="nome" name="nome" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="preco">Preço (R$):</label>
+                        <input type="number" id="preco" name="preco" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="descricao">Descrição (opcional):</label>
+                        <input type="text" id="descricao" name="descricao" placeholder="Ex: ✂️ Corte Simples - R$ 30,00">
+                    </div>
+                    <button type="submit" class="btn-primary">Adicionar Serviço</button>
+                </form>
+
+                <hr class="separator">
+
+                <div class="service-list">
+                    <h3>Serviços Atuais</h3>
+                    {% if servicos %}
+                        <ul>
+                            {% for servico in servicos %}
+                                <li>
+                                    <div class="service-item">
+                                        <span class="service-name">{{ servico.nome }}</span>
+                                        <span class="service-price">R$ {{ "%.2f"|format(servico.preco) }}</span>
+                                        <form method="POST" action="{{ url_for('gerenciar_servicos') }}" style="display:inline;">
+                                            <input type="hidden" name="acao" value="remover">
+                                            <input type="hidden" name="servico_id" value="{{ servico.id }}">
+                                            <button type="submit" class="btn-remove">Remover</button>
+                                        </form>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p>Nenhum serviço cadastrado ainda. Adicione um acima!</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="section-container">
+                <hr class="separator">
+                <h2 style="margin-bottom: 1.5rem;">Gerenciar Horários de Atendimento</h2>
+                
+                <form id="horarioForm" onsubmit="salvarHorarios(event)">
+                    {% for dia, config in configuracao_completa.items() %}
+                        <div class="form-group dia-semana">
+                            <label class="switch">
+                                <input type="checkbox" name="dia" value="{{ dia }}" {% if config.aberto %}checked{% endif %}>
+                                <span class="slider round"></span>
+                            </label>
+                            <span class="dia-label">{{ dia }}</span>
+                            <div class="horarios {% if not config.aberto %}hidden{% endif %}">
+                                <input type="time" name="abertura_{{ dia }}" value="{{ config.abertura }}">
+                                <span>às</span>
+                                <input type="time" name="fechamento_{{ dia }}" value="{{ config.fechamento }}">
+                            </div>
+                        </div>
+                    {% endfor %}
+                    <button type="submit" class="btn-primary" style="margin-top: 2rem;">Salvar Horários</button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.dia-semana input[type="checkbox"]').forEach(checkbox => {
+                checkbox.addEventListener('change', (event) => {
+                    const horariosDiv = event.target.closest('.dia-semana').querySelector('.horarios');
+                    if (event.target.checked) {
+                        horariosDiv.classList.remove('hidden');
+                    } else {
+                        horariosDiv.classList.add('hidden');
+                    }
+                });
+            });
+        });
+
+        async function salvarHorarios(event) {
+            event.preventDefault();
+            const form = document.getElementById('horarioForm');
+            const formData = new FormData(form);
+            const data = {};
+
+            document.querySelectorAll('.dia-semana input[type="checkbox"]').forEach(checkbox => {
+                const dia = checkbox.value;
+                const aberto = checkbox.checked;
+                data[dia] = {
+                    aberto: aberto,
+                    abertura: formData.get(`abertura_${dia}`),
+                    fechamento: formData.get(`fechamento_${dia}`)
+                };
+            });
+
+            try {
+                const response = await fetch('{{ url_for("gerenciar_servicos") }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    alert(result.message);
+                } else {
+                    alert('Erro ao salvar horários.');
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('Erro na comunicação com o servidor.');
+            }
+        }
+    </script>
+</body>
+</html>
