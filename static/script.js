@@ -17,12 +17,6 @@ document.addEventListener('DOMContentLoaded', function() {
         dataInput.addEventListener('change', async function() {
             const dataSelecionada = new Date(this.value + 'T00:00:00');
             const diaSemana = dataSelecionada.getDay();
-            if (diaSemana === 0) {
-                alert('🚫 Desculpe, não atendemos aos domingos. Escolha outro dia.');
-                this.value = '';
-                if (horaSelect) horaSelect.innerHTML = '<option value="">Selecione o horário...</option>';
-                return;
-            }
             await atualizarHorariosDisponiveis();
         });
     }
