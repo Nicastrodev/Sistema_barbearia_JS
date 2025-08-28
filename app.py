@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 import os
 from collections import defaultdict
 from datetime import datetime, time, timedelta
+import uuid
 
 # Configuração do Flask
 app = Flask(__name__)
@@ -14,9 +15,10 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(base_dir, 'b
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
-# --- MODELO DE DADOS ---
+# --- MODELO DE DADOS CORRIGIDO ---
 class Agendamento(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    # Alterado para String para usar UUID, que é mais seguro
+    id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     nome = db.Column(db.String(100), nullable=False)
     telefone = db.Column(db.String(20), nullable=False)
     servico = db.Column(db.String(100), nullable=False)
@@ -53,7 +55,8 @@ with app.app_context():
         db.session.commit()
         print("Serviços iniciais populados no banco de dados.")
 
-# --- ROTA PRINCIPAL (Agendamento) ---
+# --- ROTAS DA ÁREA DO CLIENTE ---
+
 @app.route("/", methods=["GET", "POST"])
 def index():
     if request.method == "POST":
@@ -67,21 +70,59 @@ def index():
         db.session.add(novo_agendamento)
         db.session.commit()
         
-        return redirect(url_for("confirmacao", nome=nome, servico=servico, data=data, hora=hora))
+        agendamento_id = novo_agendamento.id
+        
+        return redirect(url_for("confirmacao", 
+                                 nome=nome, 
+                                 servico=servico, 
+                                 data=data, 
+                                 hora=hora,
+                                 id=agendamento_id))
 
-    servicos = Servico.query.order_by(Servico.nome).all()
+    servicos = Servico.query.all()
     return render_template("index.html", servicos=servicos)
 
-# --- ROTA DE CONFIRMAÇÃO ---
 @app.route("/confirmacao")
 def confirmacao():
     nome = request.args.get("nome")
     servico = request.args.get("servico")
     data = request.args.get("data")
     hora = request.args.get("hora")
-    return render_template("confirmacao.html", nome=nome, servico=servico, data=data, hora=hora)
+    agendamento_id = request.args.get("id")
+    
+    return render_template("confirmacao.html", 
+                           nome=nome, 
+                           servico=servico, 
+                           data=data, 
+                           hora=hora,
+                           id=agendamento_id)
 
-# --- ROTA DE LOGIN ---
+@app.route("/cancelar", methods=["GET", "POST"])
+@app.route("/cancelar/<string:id_agendamento>", methods=["GET"])
+def cancelar_agendamento(id_agendamento=None):
+    id_a_cancelar = id_agendamento
+    if request.method == "POST":
+        id_a_cancelar = request.form.get("id_cancelar")
+
+    if not id_a_cancelar:
+        return redirect(url_for("confirmacao_cancelamento", status="erro"))
+
+    agendamento = Agendamento.query.get(id_a_cancelar)
+    
+    if agendamento:
+        db.session.delete(agendamento)
+        db.session.commit()
+        return redirect(url_for("confirmacao_cancelamento", status="sucesso"))
+    else:
+        return redirect(url_for("confirmacao_cancelamento", status="nao_encontrado"))
+
+@app.route("/cancelamento-confirmado")
+def confirmacao_cancelamento():
+    status = request.args.get("status")
+    return render_template("cancelamento_confirmado.html", status=status)
+
+# --- ROTAS DA ÁREA ADMIN ---
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
@@ -93,13 +134,11 @@ def login():
             return render_template("login.html", erro="Senha incorreta. Tente novamente.")
     return render_template("login.html")
 
-# --- ROTA DE LOGOUT ---
 @app.route("/logout")
 def logout():
     session.pop("logado", None)
     return redirect(url_for("index"))
 
-# --- ROTA: LISTA DE AGENDAMENTOS (ÁREA ADMIN) ---
 @app.route("/agendamentos")
 def agendamentos():
     if not session.get("logado"):
@@ -111,7 +150,7 @@ def agendamentos():
     for ag in lista:
         try:
             data_formatada = datetime.strptime(ag.data, "%Y-%m-%d").strftime("%d/%m/%Y")
-        except:
+        except ValueError:
             data_formatada = ag.data
         agendamentos_por_data[data_formatada].append({
             "id": ag.id,
@@ -129,7 +168,6 @@ def agendamentos():
         agendamentos_json=json.dumps(agendamentos_por_data, ensure_ascii=False)
     )
 
-# --- ROTA: GERENCIAR SERVIÇOS E HORÁRIOS (ÁREA ADMIN) ---
 @app.route("/gerenciar-servicos", methods=["GET", "POST"])
 def gerenciar_servicos():
     if not session.get("logado"):
@@ -137,7 +175,6 @@ def gerenciar_servicos():
 
     if request.method == "POST":
         if request.is_json:
-            # Lógica para salvar os horários
             data = request.json
             db.session.query(HorarioConfiguracao).delete()
             for dia, horarios in data.items():
@@ -152,7 +189,6 @@ def gerenciar_servicos():
             db.session.commit()
             return jsonify({"message": "Configuração de horários salva com sucesso!"})
         else:
-            # Lógica para adicionar/remover serviços (formulário)
             acao = request.form.get("acao")
             
             if acao == "adicionar":
@@ -176,7 +212,6 @@ def gerenciar_servicos():
             
             return redirect(url_for("gerenciar_servicos"))
 
-    # Para GET: renderiza a página com todos os dados
     servicos = Servico.query.all()
     
     dias_semana_ordem = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado", "Domingo"]
@@ -189,7 +224,6 @@ def gerenciar_servicos():
                            servicos=servicos, 
                            configuracao_completa=configuracao_completa)
 
-# --- API: horários disponíveis ---
 @app.route("/api/horarios/<data>")
 def api_horarios(data):
     try:

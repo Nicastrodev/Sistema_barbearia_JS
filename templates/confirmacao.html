@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <!-- Navbar -->
     <nav class="navbar">
         <div class="nav-container">
             <a href="{{ url_for('index') }}" class="logo">
@@ -22,7 +21,6 @@
         </div>
     </nav>
 
-    <!-- Container de Confirmação -->
     <main class="confirmation-container">
         <div class="confirmation-card">
             <div class="success-icon">✅</div>
@@ -34,22 +32,32 @@
 
             <div class="appointment-details">
                 <h3 style="color: #d4af37; margin-bottom: 1rem;">📋 Detalhes do Agendamento:</h3>
+                <p><strong>#️⃣ ID do Agendamento:</strong> {{ id }}</p>
                 <p><strong>🎯 Serviço:</strong> {{ servico }}</p>
                 <p><strong>📅 Data:</strong> {{ data }}</p>
                 <p><strong>🕐 Horário:</strong> {{ hora }}</p>
                 <p style="margin-top: 1rem; color: #666; font-size: 0.9rem;">
-                    <strong>⚠️ Importante:</strong> Chegue com 10 minutos de antecedência
+                    <strong>⚠️ Importante:</strong> Anote este ID caso precise cancelar seu agendamento.
                 </p>
             </div>
 
             <div style="margin: 2rem 0;">
                 <p style="margin-bottom: 1rem;">
-                    Para confirmar ou alterar seu agendamento, entre em contato conosco:
+                    Para qualquer dúvida, entre em contato:
                 </p>
-                <a href="https://wa.me/5511999999999?text=Olá! Gostaria de confirmar meu agendamento para {{ data }} às {{ hora }}. Nome: {{ nome }}" 
-                   target="_blank" class="whatsapp-btn">
+
+                <a href="https://wa.me/5511999999999?text=Olá! Tenho uma dúvida sobre meu agendamento de {{ data }} às {{ hora }}. Nome: {{ nome }}" 
+                   target="_blank" class="whatsapp-btn" style="margin-bottom: 1rem;">
                     📱 Falar no WhatsApp
                 </a>
+
+                <form action="{{ url_for('cancelar_agendamento') }}" method="POST" style="display:inline;">
+                    <input type="hidden" name="id_cancelar" value="{{ id }}">
+                    <button type="submit" class="cancel-btn"
+                            onclick="return confirm('Tem certeza que deseja cancelar o agendamento?');">
+                        ❌ Cancelar Agendamento
+                    </button>
+                </form>
             </div>
 
             <div style="background: #e8f4f8; padding: 1.5rem; border-radius: 10px; margin-top: 2rem;">
@@ -59,7 +67,7 @@
                     São Paulo - SP, CEP: 01234-567
                 </p>
             </div>
-
+            
             <a href="{{ url_for('index') }}" class="back-btn" style="margin-top: 2rem;">
                 ⬅️ Fazer Novo Agendamento
             </a>

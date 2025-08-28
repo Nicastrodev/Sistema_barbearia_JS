@@ -9,7 +9,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 </head>
 <body>
-    <!-- Navbar -->
     <nav class="navbar">
         <div class="nav-container">
             <a href="{{ url_for('index') }}" class="logo">
@@ -24,13 +23,11 @@
         </div>
     </nav>
 
-    <!-- Header Principal -->
     <header class="main-header">
         <h1>✂️ Barbearia Elite</h1>
         <p>Agende seu corte de forma rápida e profissional</p>
     </header>
 
-    <!-- Container Principal -->
     <main class="container">
         <div class="form-card">
             <form method="POST" id="agendamentoForm">
@@ -73,6 +70,21 @@
                 </button>
             </form>
         </div>
+
+        <div class="form-card" style="margin-top: 2rem;">
+            <h3>❌ Cancelar Agendamento</h3>
+    <p>Digite o ID do agendamento para cancelar:</p>
+    <form method="POST" action="{{ url_for('cancelar_agendamento') }}">
+        <div class="form-group">
+            <label for="id_cancelar">#️⃣ ID do Agendamento:</label>
+            <input type="text" id="id_cancelar" name="id_cancelar" required
+                   placeholder="Ex: 9bdae5b8-3600-45d7-8db4-ea4d1c9078b1">
+        </div>
+        <button type="submit" class="btn-cancel">
+            Confirmar Cancelamento
+        </button>
+    </form>
+</div>
     </main>
 
     <script src="{{ url_for('static', filename='script.js') }}"></script>
