@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const dataMinima = hoje.toISOString().split('T')[0];
         dataInput.setAttribute('min', dataMinima);
 
-        // Bloquear domingos e atualizar horários
+        // atualizar horários
         dataInput.addEventListener('change', async function() {
             const dataSelecionada = new Date(this.value + 'T00:00:00');
             const diaSemana = dataSelecionada.getDay();

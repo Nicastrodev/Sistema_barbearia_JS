@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <nav class="navbar">
@@ -30,62 +31,62 @@
 
     <main class="container">
         <div class="form-card">
+            <h2>📅 Agendar Horário</h2>
             <form method="POST" id="agendamentoForm">
                 <div class="form-group">
                     <label for="nome">👤 Nome Completo:</label>
-                    <input type="text" id="nome" name="nome" required 
-                           placeholder="Digite seu nome completo">
+                    <input type="text" id="nome" name="nome" placeholder="Seu nome completo" required>
                 </div>
-
                 <div class="form-group">
-                    <label for="telefone">📱 Telefone/WhatsApp:</label>
-                    <input type="tel" id="telefone" name="telefone" required 
-                           placeholder="(11) 99999-9999">
+                    <label for="telefone">📱 Telefone (WhatsApp):</label>
+                    <input type="tel" id="telefone" name="telefone" placeholder="(99) 99999-9999" required>
                 </div>
-
                 <div class="form-group">
-    <label for="servico">💇‍♂️ Serviço Desejado:</label>
-    <select id="servico" name="servico" required>
-        <option value="">Selecione o serviço...</option>
-        {% for servico in servicos %}
-          <option value="{{ servico.nome }}">{{ servico.descricao or servico.nome }}</option>
-        {% endfor %}
-    </select>
-</div>
-
+                    <label for="servico">💇 Tipo de Serviço:</label>
+                    <select id="servico" name="servico" required>
+                        <option value="">Selecione um serviço...</option>
+                        {% for servico in servicos %}
+                        <option value="{{ servico.nome }}" data-preco="{{ servico.preco }}">
+                            {{ servico.descricao or servico.nome }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
                 <div class="form-group">
                     <label for="data">📅 Data:</label>
                     <input type="date" id="data" name="data" required>
                 </div>
-
                 <div class="form-group">
                     <label for="hora">🕐 Horário:</label>
                     <select id="hora" name="hora" required>
                         <option value="">Selecione o horário...</option>
                     </select>
                 </div>
-
                 <button type="submit" class="btn-primary" id="btnAgendar">
                     📋 Confirmar Agendamento
                 </button>
             </form>
         </div>
 
-        <div class="form-card" style="margin-top: 2rem;">
-            <h3>❌ Cancelar Agendamento</h3>
-    <p>Digite o ID do agendamento para cancelar:</p>
-    <form method="POST" action="{{ url_for('cancelar_agendamento') }}">
-        <div class="form-group">
-            <label for="id_cancelar">#️⃣ ID do Agendamento:</label>
-            <input type="text" id="id_cancelar" name="id_cancelar" required
-                   placeholder="Ex: 9bdae5b8-3600-45d7-8db4-ea4d1c9078b1">
+        <div class="form-card">
+            <h2>❌ Cancelar Agendamento</h2>
+            <p>Digite o ID do agendamento para cancelar:</p>
+            <form method="POST" action="{{ url_for('cancelar_agendamento') }}">
+                <div class="form-group">
+                    <label for="id_cancelar">#️⃣ ID do Agendamento:</label>
+                    <input type="text" id="id_cancelar" name="id_cancelar" required
+                           placeholder="Ex: 9bdae5b8-3600-45d7-8db4-ea4d1c9078b1">
+                </div>
+                <button type="submit" class="btn-cancel" onclick="return confirm('Tem certeza que deseja cancelar?');">
+                    🗑️ Cancelar Agendamento
+                </button>
+            </form>
         </div>
-        <button type="submit" class="btn-cancel">
-            Confirmar Cancelamento
-        </button>
-    </form>
-</div>
     </main>
+
+    <footer class="footer">
+        &copy; Barbearia Elite. Todos os direitos reservados.
+    </footer>
 
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>

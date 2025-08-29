@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gerenciar - Painel Admin</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <nav class="navbar">
@@ -27,12 +30,9 @@
             <h1>🛠️ Gerenciar Serviços e Horários</h1>
 
             <div class="section-container">
-                <hr class="separator">
-                <h2 style="margin-bottom: 1.5rem;">Gerenciar Serviços</h2>
-                
+                <h2>Adicionar Novo Serviço</h2>
                 <form method="POST" action="{{ url_for('gerenciar_servicos') }}" class="add-service-form">
                     <input type="hidden" name="acao" value="adicionar">
-                    <h3>Adicionar Novo Serviço</h3>
                     <div class="form-group">
                         <label for="nome">Nome do Serviço:</label>
                         <input type="text" id="nome" name="nome" required>
@@ -43,23 +43,25 @@
                     </div>
                     <div class="form-group">
                         <label for="descricao">Descreva o seu serviço:</label>
-                        <input type="text" id="descricao" name="descricao" placeholder="Ex: ✂️ Corte Simples - R$ 30,00">
+                        <input type="text" id="descricao" name="descricao" placeholder="Ex: Corte Simples - R$ 30,00">
                     </div>
                     <button type="submit" class="btn-primary">Adicionar Serviço</button>
                 </form>
 
                 <hr class="separator">
 
+                <h2>Serviços Atuais</h2>
                 <div class="service-list">
-                    <h3>Serviços Atuais</h3>
                     {% if servicos %}
                         <ul>
                             {% for servico in servicos %}
                                 <li>
                                     <div class="service-item">
-                                        <span class="service-name">{{ servico.nome }}</span>
-                                        <span class="service-price">R$ {{ "%.2f"|format(servico.preco) }}</span>
-                                        <form method="POST" action="{{ url_for('gerenciar_servicos') }}" style="display:inline;">
+                                        <div class="service-details">
+                                            <span class="service-name">{{ servico.nome }}</span>
+                                            <span class="service-price">R$ {{ "%.2f"|format(servico.preco) }}</span>
+                                        </div>
+                                        <form method="POST" action="{{ url_for('gerenciar_servicos') }}">
                                             <input type="hidden" name="acao" value="remover">
                                             <input type="hidden" name="servico_id" value="{{ servico.id }}">
                                             <button type="submit" class="btn-remove">Remover</button>
@@ -75,23 +77,21 @@
             </div>
 
             <div class="section-container">
-                <hr class="separator">
-                <h2 style="margin-bottom: 1.5rem;">Gerenciar Horários de Atendimento</h2>
-                
+                <h2>Gerenciar Horários de Atendimento</h2>
                 <form id="horarioForm" onsubmit="salvarHorarios(event)">
                     {% for dia, config in configuracao_completa.items() %}
-                        <div class="form-group dia-semana">
-                            <label class="switch">
-                                <input type="checkbox" name="dia" value="{{ dia }}" {% if config.aberto %}checked{% endif %}>
-                                <span class="slider round"></span>
-                            </label>
-                            <span class="dia-label">{{ dia }}</span>
-                            <div class="horarios {% if not config.aberto %}hidden{% endif %}">
-                                <input type="time" name="abertura_{{ dia }}" value="{{ config.abertura }}">
-                                <span>às</span>
-                                <input type="time" name="fechamento_{{ dia }}" value="{{ config.fechamento }}">
-                            </div>
+                    <div class="form-group dia-semana">
+                        <label class="switch">
+                            <input type="checkbox" name="dia" value="{{ dia }}" {% if config.aberto %}checked{% endif %}>
+                            <span class="slider round"></span>
+                        </label>
+                        <span class="dia-label">{{ dia }}</span>
+                        <div class="horarios {% if not config.aberto %}hidden{% endif %}">
+                            <input type="time" name="abertura_{{ dia }}" value="{{ config.abertura or '08:00' }}" required>
+                            <span>até</span>
+                            <input type="time" name="fechamento_{{ dia }}" value="{{ config.fechamento or '18:00' }}" required>
                         </div>
+                    </div>
                     {% endfor %}
                     <button type="submit" class="btn-primary" style="margin-top: 2rem;">Salvar Horários</button>
                 </form>
@@ -99,17 +99,20 @@
         </div>
     </main>
 
+    <footer class="footer">
+        &copy; Barbearia Elite. Todos os direitos reservados.
+    </footer>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('.dia-semana input[type="checkbox"]').forEach(checkbox => {
-                checkbox.addEventListener('change', (event) => {
-                    const horariosDiv = event.target.closest('.dia-semana').querySelector('.horarios');
-                    if (event.target.checked) {
-                        horariosDiv.classList.remove('hidden');
-                    } else {
-                        horariosDiv.classList.add('hidden');
-                    }
-                });
+        document.querySelectorAll('.dia-semana input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const horariosDiv = this.closest('.dia-semana').querySelector('.horarios');
+                if (this.checked) {
+                    horariosDiv.classList.remove('hidden');
+                } else {
+                    horariosDiv.classList.add('hidden');
+                }
             });
         });
 

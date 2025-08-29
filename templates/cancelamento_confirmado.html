@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cancelamento - Barbearia Elite</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+   <link rel="stylesheet" href="{{ url_for('static', filename='agendamentos_antigo.css') }}">
 </head>
 <body>
     <nav class="navbar">
@@ -36,9 +39,9 @@
                 <h2>Erro</h2>
                 <p>Ocorreu um erro. Por favor, tente novamente.</p>
             {% endif %}
-            
+
             <a href="{{ url_for('index') }}" class="back-btn" style="margin-top: 2rem;">
-                ⬅️ Voltar para o Início
+                ← Voltar ao Início
             </a>
         </div>
     </main>
