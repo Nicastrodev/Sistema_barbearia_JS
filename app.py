@@ -268,5 +268,20 @@ def api_horarios(data):
 
     return jsonify(horarios_filtrados)
 
+
+@app.route("/remover-agendamento", methods=["POST"])
+def remover_agendamento():
+    if not session.get("logado"):
+        return redirect(url_for("login"))
+
+    agendamento_id = request.form.get("agendamento_id")
+    agendamento_a_remover = Agendamento.query.get(agendamento_id)
+
+    if agendamento_a_remover:
+        db.session.delete(agendamento_a_remover)
+        db.session.commit()
+    
+    return redirect(url_for("agendamentos"))
+
 if __name__ == "__main__":
     app.run(debug=True)

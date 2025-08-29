@@ -57,51 +57,56 @@
                 <h2 style="padding: 1.5rem; margin: 0; background: #333; color: white; font-size: 1.3rem;">
                     📋 Todos os Agendamentos
                 </h2>
-                <div id="allAppointmentsList">
-                    {% for data, ags in agendamentos_por_data.items() %}
-                        <div class="date-section" data-date="{{ data }}">
-                            <div class="date-header">
-                                📌 {{ data }} ({{ ags|length }} cliente{{ 's' if ags|length != 1 else '' }})
-                            </div>
-                            <table class="appointments-table">
-                                <thead>
-                                    <tr>
-                                        <th>🕐 Horário</th>
-                                        <th>👤 Nome</th>
-                                        <th>💇 Serviço</th>
-                                        <th>📱 Telefone</th>
-                                        <th>📞 Ações</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for ag in ags %}
-                                    <tr>
-                                        <td><strong>{{ ag.hora }}</strong></td>
-                                        <td>{{ ag.nome }}</td>
-                                        <td>{{ ag.servico }}</td>
-                                        <td>{{ ag.telefone }}</td>
-                                        <td>
-                                            <a href="https://wa.me/55{{ ag.telefone|replace('(', '')|replace(')', '')|replace('-', '')|replace(' ', '') }}?text=Olá {{ ag.nome }}! Confirmando seu agendamento para {{ ag.data }} às {{ ag.hora }} - {{ ag.servico }}" 
-                                               target="_blank"
-                                               class="whatsapp-btn">
-                                                📲 WhatsApp
-                                            </a>
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
+               <div id="allAppointmentsList">
+    {% for data, ags in agendamentos_por_data.items() %}
+        <div class="date-section" data-date="{{ data }}">
+            <div class="date-header">
+                📌 {{ data }} ({{ ags|length }} cliente{{ 's' if ags|length != 1 else '' }})
+            </div>
+            <table class="appointments-table">
+                <thead>
+                    <tr>
+                        <th>🕐 Horário</th>
+                        <th>👤 Nome</th>
+                        <th>💇 Serviço</th>
+                        <th>📱 Telefone</th>
+                        <th>📞 Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ag in ags %}
+                    <tr>
+                        <td><strong>{{ ag.hora }}</strong></td>
+                        <td>{{ ag.nome }}</td>
+                        <td>{{ ag.servico }}</td>
+                        <td>{{ ag.telefone }}</td>
+                        <td>
+                            <a href="https://wa.me/55{{ ag.telefone|replace('(', '')|replace(')', '')|replace('-', '')|replace(' ', '') }}?text=Olá {{ ag.nome }}! Confirmando seu agendamento para {{ ag.data }} às {{ ag.hora }} - {{ ag.servico }}" 
+                               target="_blank"
+                               class="whatsapp-btn">
+                               📲 WhatsApp
+                            </a>
+                            <form action="{{ url_for('remover_agendamento') }}" method="post" style="display:inline;">
+                                <input type="hidden" name="agendamento_id" value="{{ ag.id }}">
+                                <button type="submit" class="remove-btn" onclick="return confirm('Tem certeza que deseja remover este agendamento?');">
+                                    🗑️ Remover
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
                     {% endfor %}
-
-                    {% if not agendamentos_por_data %}
-                        <div class="empty-state">
-                            <div class="empty-icon">🔍</div>
-                            <h3>Nenhum agendamento encontrado</h3>
-                            <p>Quando os clientes fizerem agendamentos, eles aparecerão aqui.</p>
-                        </div>
-                    {% endif %}
-                </div>
+                </tbody>
+            </table>
+        </div>
+    {% endfor %}
+    {% if not agendamentos_por_data %}
+        <div class="empty-state">
+            <div class="empty-icon">🔍</div>
+            <h3>Nenhum agendamento encontrado</h3>
+            <p>Quando os clientes fizerem agendamentos, eles aparecerão aqui.</p>
+        </div>
+    {% endif %}
+</div>
             </div>
         </div>
 
