@@ -9,14 +9,17 @@ import uuid
 app = Flask(__name__)
 app.secret_key = "chave_super_secreta"
 
-# Configuração do banco de dados SQLite
-base_dir = os.path.abspath(os.path.dirname(__file__))
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(base_dir, 'barbearia.db')
+# --- CONFIGURAÇÃO DO BANCO DE DADOS MYSQL ---
+# Substituindo a configuração SQLite pela do MySQL para o XAMPP
+# O usuário padrão é 'root' e a senha é vazia. O nome do banco de dados é 'barbearia'.
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@localhost/barbearia'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
-# --- MODELO DE DADOS CORRIGIDO ---
+# --- MODELOS DE DADOS ---
+# Renomeei a classe para 'Agendamento' e 'Servico' para seguir o padrão de nomenclatura.
 class Agendamento(db.Model):
+    __tablename__ = 'agendamento' # Garante que a tabela se chame 'agendamento'
     # Alterado para String para usar UUID, que é mais seguro
     id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     nome = db.Column(db.String(100), nullable=False)
@@ -26,12 +29,14 @@ class Agendamento(db.Model):
     hora = db.Column(db.String(20), nullable=False)
 
 class Servico(db.Model):
+    __tablename__ = 'servicos' # Garante que a tabela se chame 'servicos'
     id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String(100), nullable=False, unique=True)
     preco = db.Column(db.Float, nullable=False)
     descricao = db.Column(db.String(255), nullable=True)
 
 class HorarioConfiguracao(db.Model):
+    __tablename__ = 'horario_configuracao' # Garante que a tabela se chame 'horario_configuracao'
     id = db.Column(db.Integer, primary_key=True)
     dia_semana = db.Column(db.String(20), nullable=False, unique=True)
     abertura = db.Column(db.String(5), nullable=False)
@@ -41,6 +46,7 @@ class HorarioConfiguracao(db.Model):
 with app.app_context():
     db.create_all()
     
+    # Verifica se a tabela Servico está vazia e a popula
     if Servico.query.count() == 0:
         servicos_iniciais = [
             {"nome": "Corte Simples", "preco": 30.00, "descricao": "✂️ Corte Simples - R$ 30,00"},
@@ -73,11 +79,11 @@ def index():
         agendamento_id = novo_agendamento.id
         
         return redirect(url_for("confirmacao", 
-                                 nome=nome, 
-                                 servico=servico, 
-                                 data=data, 
-                                 hora=hora,
-                                 id=agendamento_id))
+                                nome=nome, 
+                                servico=servico, 
+                                data=data, 
+                                hora=hora,
+                                id=agendamento_id))
 
     servicos = Servico.query.all()
     return render_template("index.html", servicos=servicos)
@@ -91,11 +97,11 @@ def confirmacao():
     agendamento_id = request.args.get("id")
     
     return render_template("confirmacao.html", 
-                           nome=nome, 
-                           servico=servico, 
-                           data=data, 
-                           hora=hora,
-                           id=agendamento_id)
+                            nome=nome, 
+                            servico=servico, 
+                            data=data, 
+                            hora=hora,
+                            id=agendamento_id)
 
 @app.route("/cancelar", methods=["GET", "POST"])
 @app.route("/cancelar/<string:id_agendamento>", methods=["GET"])
@@ -216,13 +222,13 @@ def gerenciar_servicos():
     
     dias_semana_ordem = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado", "Domingo"]
     configuracao_atual = {c.dia_semana: {"abertura": c.abertura, "fechamento": c.fechamento, "aberto": True} 
-                          for c in HorarioConfiguracao.query.all()}
+                            for c in HorarioConfiguracao.query.all()}
     configuracao_completa = {dia: configuracao_atual.get(dia, {"abertura": "", "fechamento": "", "aberto": False}) 
-                             for dia in dias_semana_ordem}
+                                for dia in dias_semana_ordem}
     
     return render_template("gerenciar_servicos.html", 
-                           servicos=servicos, 
-                           configuracao_completa=configuracao_completa)
+                            servicos=servicos, 
+                            configuracao_completa=configuracao_completa)
 
 @app.route("/api/horarios/<data>")
 def api_horarios(data):
