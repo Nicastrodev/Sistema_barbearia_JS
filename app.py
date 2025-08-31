@@ -12,7 +12,7 @@ app.secret_key = "chave_super_secreta"
 # --- CONFIGURAÇÃO DO BANCO DE DADOS MYSQL ---
 # Substituindo a configuração SQLite pela do MySQL para o XAMPP
 # O usuário padrão é 'root' e a senha é vazia. O nome do banco de dados é 'barbearia'.
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root@localhost/barbearia'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
