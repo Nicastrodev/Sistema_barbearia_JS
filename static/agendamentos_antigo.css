@@ -578,21 +578,27 @@ input:focus, select:focus {
 /* === RESPONSIVIDADE === */
 @media (max-width: 768px) {
     .nav-container {
-        flex-direction: column;
+        flex-direction: column; /* Deixa o logo e os links em coluna */
         gap: 1rem;
         padding: 1rem;
     }
-    
+
+    .logo {
+        margin-bottom: 0; /* Ajusta a margem do logo */
+    }
+
     .nav-links {
-        flex-direction: column;
+        flex-direction: row; /* Volta a alinhar os links em linha */
+        justify-content: center; /* Centraliza os links */
         gap: 1rem;
         width: 100%;
     }
-    
+
     .nav-link, .logout-btn {
         text-align: center;
-        width: 100%;
+        width: auto; /* Deixa a largura automática para os botões ficarem menores */
     }
+
     
     .main-header h1 {
         font-size: 2.5rem;
@@ -639,18 +645,20 @@ input:focus, select:focus {
         padding: 1rem;
     }
     
+    /* Regras para tornar a tabela responsiva com rolagem horizontal */
+    .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
     .appointments-table {
-        font-size: 0.85rem;
+        font-size: 0.9rem;
     }
     
     .appointments-table th,
     .appointments-table td {
         padding: 0.8rem 0.5rem;
-    }
-    
-    .whatsapp-btn {
-        padding: 0.4rem 0.8rem;
-        font-size: 0.8rem;
+        white-space: nowrap;
     }
     
     .date-header {

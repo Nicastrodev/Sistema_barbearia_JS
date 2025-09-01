@@ -7,33 +7,24 @@
    <link rel="stylesheet" href="{{ url_for('static', filename='agendamentos_antigo.css') }}">
 </head>
 <body>
-    <!-- Navbar -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <a href="{{ url_for('index') }}" class="logo">
-                <span class="logo-icon">💈</span>
-                Barbearia Elite
-            </a>
-            <div class="nav-links">
-                <a href="{{ url_for('index') }}" class="nav-link">🏠 Início</a>
-     
+   <nav class="navbar">
+    <div class="nav-container">
+        <a href="{{ url_for('index') }}" class="logo">
+            <span class="logo-icon">💈</span>
+            Barbearia Elite
+        </a>
         <div class="nav-links">
+            <a href="{{ url_for('index') }}" class="nav-link">🏠 Início</a>
             <a href="{{ url_for('gerenciar_servicos') }}" class="nav-link admin-btn">
                 🛠️ Gerenciar Serviços
             </a>
         </div>
     </div>
 </nav>
-            </div>
-        </div>
-    </nav>
-
     <main class="appointments-container">
         <h1 class="appointments-title">📅 Painel de Agendamentos</h1>
 
-        <!-- View Principal (Calendário + Lista) -->
         <div id="mainView" class="view active">
-            <!-- Calendário -->
             <div class="calendar-container">
                 <div class="calendar-header">
                     <button class="calendar-nav" id="prevMonth">❮</button>
@@ -41,7 +32,6 @@
                     <button class="calendar-nav" id="nextMonth">❯</button>
                 </div>
                 <div class="calendar-grid" id="calendarGrid">
-                    <!-- Cabeçalhos dos dias da semana -->
                     <div class="weekday-header">Dom</div>
                     <div class="weekday-header">Seg</div>
                     <div class="weekday-header">Ter</div>
@@ -52,7 +42,6 @@
                 </div>
             </div>
 
-            <!-- Lista completa de agendamentos -->
             <div class="all-appointments">
                 <h2 style="padding: 1.5rem; margin: 0; background: #333; color: white; font-size: 1.3rem;">
                     📋 Todos os Agendamentos
@@ -63,40 +52,42 @@
             <div class="date-header">
                 📌 {{ data }} ({{ ags|length }} cliente{{ 's' if ags|length != 1 else '' }})
             </div>
-            <table class="appointments-table">
-                <thead>
-                    <tr>
-                        <th>🕐 Horário</th>
-                        <th>👤 Nome</th>
-                        <th>💇 Serviço</th>
-                        <th>📱 Telefone</th>
-                        <th>📞 Ações</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for ag in ags %}
-                    <tr>
-                        <td><strong>{{ ag.hora }}</strong></td>
-                        <td>{{ ag.nome }}</td>
-                        <td>{{ ag.servico }}</td>
-                        <td>{{ ag.telefone }}</td>
-                        <td>
-                            <a href="https://wa.me/55{{ ag.telefone|replace('(', '')|replace(')', '')|replace('-', '')|replace(' ', '') }}?text=Olá {{ ag.nome }}! Confirmando seu agendamento para {{ ag.data }} às {{ ag.hora }} - {{ ag.servico }}" 
-                               target="_blank"
-                               class="whatsapp-btn">
-                               📲 WhatsApp
-                            </a>
-                            <form action="{{ url_for('remover_agendamento') }}" method="post" style="display:inline;">
-                                <input type="hidden" name="agendamento_id" value="{{ ag.id }}">
-                                <button type="submit" class="remove-btn" onclick="return confirm('Tem certeza que deseja remover este agendamento?');">
-                                    🗑️ Remover
-                                </button>
-                            </form>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+           <div class="table-responsive">
+    <table class="appointments-table">
+        <thead>
+            <tr>
+                <th>🕐 Horário</th>
+                <th>👤 Nome</th>
+                <th>💇 Serviço</th>
+                <th>📱 Telefone</th>
+                <th>📞 Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ag in ags %}
+            <tr>
+                <td><strong>{{ ag.hora }}</strong></td>
+                <td>{{ ag.nome }}</td>
+                <td>{{ ag.servico }}</td>
+                <td>{{ ag.telefone }}</td>
+                <td>
+                    <a href="https://wa.me/55{{ ag.telefone|replace('(', '')|replace(')', '')|replace('-', '')|replace(' ', '') }}?text=Olá {{ ag.nome }}! Confirmando seu agendamento para {{ ag.data }} às {{ ag.hora }} - {{ ag.servico }}" 
+                        target="_blank"
+                        class="whatsapp-btn">
+                        📲 WhatsApp
+                    </a>
+                    <form action="{{ url_for('remover_agendamento') }}" method="post" style="display:inline;">
+                        <input type="hidden" name="agendamento_id" value="{{ ag.id }}">
+                        <button type="submit" class="remove-btn" onclick="return confirm('Tem certeza que deseja remover este agendamento?');">
+                            🗑️ Remover
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
         </div>
     {% endfor %}
     {% if not agendamentos_por_data %}
@@ -110,7 +101,6 @@
             </div>
         </div>
 
-        <!-- View do Dia Específico -->
         <div id="dayView" class="view">
             <div class="day-view-container">
                 <div class="day-header">
@@ -120,8 +110,7 @@
                     </button>
                 </div>
                 <div id="dayAppointments" class="day-appointments">
-                    <!-- Conteúdo será preenchido pelo JavaScript -->
-                </div>
+                    </div>
             </div>
         </div>
     </main>
@@ -270,34 +259,42 @@
                         <h3>📊 Resumo do Dia</h3>
                         <p><strong>${appointments.length}</strong> cliente${appointments.length !== 1 ? 's' : ''} agendado${appointments.length !== 1 ? 's' : ''}</p>
                     </div>
-                    <table class="appointments-table">
-                        <thead>
-                            <tr>
-                                <th>🕐 Horário</th>
-                                <th>👤 Nome</th>
-                                <th>💇 Serviço</th>
-                                <th>📱 Telefone</th>
-                                <th>📞 Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${appointments.map(ag => `
+                    <div class="table-responsive">
+                        <table class="appointments-table">
+                            <thead>
                                 <tr>
-                                    <td><strong>${ag.hora}</strong></td>
-                                    <td>${ag.nome}</td>
-                                    <td>${ag.servico}</td>
-                                    <td>${ag.telefone}</td>
-                                    <td>
-                                        <a href="https://wa.me/55${ag.telefone.replace(/\D/g, '')}?text=Olá ${ag.nome}! Confirmando seu agendamento para ${ag.data} às ${ag.hora} - ${ag.servico}" 
-                                           target="_blank"
-                                           class="whatsapp-btn">
-                                            📲 WhatsApp
-                                        </a>
-                                    </td>
+                                    <th>🕐 Horário</th>
+                                    <th>👤 Nome</th>
+                                    <th>💇 Serviço</th>
+                                    <th>📱 Telefone</th>
+                                    <th>📞 Ações</th>
                                 </tr>
-                            `).join('')}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                ${appointments.map(ag => `
+                                    <tr>
+                                        <td><strong>${ag.hora}</strong></td>
+                                        <td>${ag.nome}</td>
+                                        <td>${ag.servico}</td>
+                                        <td>${ag.telefone}</td>
+                                        <td>
+                                            <a href="https://wa.me/55${ag.telefone.replace(/\D/g, '')}?text=Olá ${ag.nome}! Confirmando seu agendamento para ${ag.data} às ${ag.hora} - ${ag.servico}"
+                                               target="_blank"
+                                               class="whatsapp-btn">
+                                                📲 WhatsApp
+                                            </a>
+                                            <form action="{{ url_for('remover_agendamento') }}" method="post" style="display:inline;">
+                                                <input type="hidden" name="agendamento_id" value="${ag.id}">
+                                                <button type="submit" class="remove-btn" onclick="return confirm('Tem certeza que deseja remover este agendamento?');">
+                                                    🗑️ Remover
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
                 `;
                 console.log('✅ Tabela de agendamentos criada');
             }
@@ -318,17 +315,22 @@
         }
 
         // Event listeners
-        document.getElementById('prevMonth').addEventListener('click', function() {
-            console.log('⬅️ Mês anterior');
-            currentDate.setMonth(currentDate.getMonth() - 1);
-            generateCalendar(currentDate);
-        });
+        // A correção
+document.getElementById('prevMonth').addEventListener('click', function() {
+    console.log('⬅️ Mês anterior');
+    // Primeiro, ajuste o dia para 1 para evitar pular meses
+    currentDate.setDate(1); 
+    currentDate.setMonth(currentDate.getMonth() - 1);
+    generateCalendar(currentDate);
+});
 
-        document.getElementById('nextMonth').addEventListener('click', function() {
-            console.log('➡️ Próximo mês');
-            currentDate.setMonth(currentDate.getMonth() + 1);
-            generateCalendar(currentDate);
-        });
+document.getElementById('nextMonth').addEventListener('click', function() {
+    console.log('➡️ Próximo mês');
+    // Primeiro, ajuste o dia para 1 para evitar pular meses
+    currentDate.setDate(1); 
+    currentDate.setMonth(currentDate.getMonth() + 1);
+    generateCalendar(currentDate);
+});
 
         document.getElementById('backToMain').addEventListener('click', function() {
             console.log('🔙 Botão voltar clicado');

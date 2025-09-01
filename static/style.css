@@ -473,3 +473,37 @@ input:checked + .slider:before {
         width: 100%;
     }
 }
+/* Adicione esta seção ao final do seu arquivo style.css */
+
+    /* Regras de responsividade para a barra de navegação */
+@media (max-width: 600px) {
+    .nav-container {
+        /* Alinha os itens na horizontal, sem quebrar a linha */
+        flex-wrap: nowrap; 
+        justify-content: space-between; /* Distribui o espaço entre o logo e os links */
+        padding: 0 1rem; /* Diminui o padding horizontal em telas menores */
+    }
+
+    .logo {
+        /* Garante que o logo não ocupe a largura toda, permitindo que os links fiquem ao lado */
+        width: auto; 
+        justify-content: flex-start;
+        margin-bottom: 0;
+        font-size: 1.25rem; /* Diminui o tamanho da fonte do logo para que caiba na tela */
+    }
+    
+    .logo-icon {
+        font-size: 1.5rem;
+    }
+
+    .nav-links {
+        width: auto;
+        justify-content: flex-end; /* Alinha os links para a direita */
+    }
+
+    .nav-link, .admin-btn {
+        padding: 0.5rem 0.8rem; /* Diminui o padding dos botões */
+        font-size: 0.75rem; /* Reduz a fonte dos botões */
+        white-space: nowrap; /* Impede que o texto do botão quebre em várias linhas */
+    }
+}
