@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gerenciar - Painel Admin</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Roboto:wght@300;400;500;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="nav-container">
+        <a href="/" class="logo"
+          ><span class="logo-icon">💈</span> Barbearia Elite</a
+        >
+        <div class="nav-links">
+          <a href="/agendamentos" class="nav-link">📅 Agendamentos</a>
+          <a href="/logout" class="logout-btn">🚪 Sair</a>
+        </div>
+      </div>
+    </nav>
+
+    <main class="container">
+      <div class="form-card">
+        <h1>🛠️ Gerenciar Serviços e Horários</h1>
+
+        <div class="section-container">
+          <h2>Adicionar Novo Serviço</h2>
+          <form
+            method="POST"
+            action="/gerenciar-servicos"
+            class="add-service-form"
+          >
+            <input type="hidden" name="acao" value="adicionar" />
+            <div class="form-group">
+              <label for="nome">Nome do Serviço:</label
+              ><input type="text" id="nome" name="nome" required />
+            </div>
+            <div class="form-group">
+              <label for="preco">Preço (R$):</label
+              ><input
+                type="number"
+                id="preco"
+                name="preco"
+                step="0.01"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="descricao">Descrição:</label
+              ><input
+                type="text"
+                id="descricao"
+                name="descricao"
+                placeholder="Ex: Máquina e tesoura, finalização..."
+              />
+            </div>
+            <button type="submit" class="btn-primary">Adicionar Serviço</button>
+          </form>
+
+          <hr class="separator" />
+
+          <h2>Serviços Atuais</h2>
+          <div class="service-list">
+            <% if (servicos && servicos.length > 0) { %>
+            <ul>
+              <% servicos.forEach(servico => { %>
+              <li>
+                <div class="service-item">
+                  <div class="service-details">
+                    <span class="service-name"><%= servico.nome %></span>
+                    <span class="service-price"
+                      >R$ <%= Number(servico.preco).toFixed(2).replace('.', ',')
+                      %></span
+                    >
+                  </div>
+                  <form method="POST" action="/gerenciar-servicos">
+                    <input type="hidden" name="acao" value="remover" />
+                    <input
+                      type="hidden"
+                      name="servico_id"
+                      value="<%= servico.id %>"
+                    />
+                    <button type="submit" class="btn-remove">Remover</button>
+                  </form>
+                </div>
+              </li>
+              <% }); %>
+            </ul>
+            <% } else { %>
+            <p>Nenhum serviço cadastrado ainda. Adicione um acima!</p>
+            <% } %>
+          </div>
+        </div>
+
+        <div class="section-container">
+          <h2>Gerenciar Horários de Atendimento</h2>
+          <form id="horarioForm" onsubmit="salvarHorarios(event)">
+            <% Object.keys(configuracoes).forEach(dia => { const config =
+            configuracoes[dia]; %>
+            <div class="form-group dia-semana">
+              <label class="switch">
+                <input type="checkbox" name="dia" value="<%= dia %>" <%=
+                config.aberto ? 'checked' : '' %>>
+                <span class="slider round"></span>
+              </label>
+              <span class="dia-label"><%= dia %></span>
+              <div class="horarios <%= !config.aberto ? 'hidden' : '' %>">
+                <input
+                  type="time"
+                  name="abertura_<%= dia %>"
+                  value="<%= config.abertura || '09:00' %>"
+                  required
+                />
+                <span>até</span>
+                <input
+                  type="time"
+                  name="fechamento_<%= dia %>"
+                  value="<%= config.fechamento || '18:00' %>"
+                  required
+                />
+              </div>
+            </div>
+            <% }); %>
+            <button type="submit" class="btn-primary" style="margin-top: 2rem">
+              Salvar Horários
+            </button>
+          </form>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      // Lógica para mostrar/esconder os inputs de hora
+      document
+        .querySelectorAll('.dia-semana input[type="checkbox"]')
+        .forEach((checkbox) => {
+          checkbox.addEventListener("change", function () {
+            const horariosDiv =
+              this.closest(".dia-semana").querySelector(".horarios");
+            horariosDiv.classList.toggle("hidden", !this.checked);
+          });
+        });
+
+      // Função para salvar horários via fetch
+      async function salvarHorarios(event) {
+        event.preventDefault();
+        const form = document.getElementById("horarioForm");
+        const data = {};
+
+        document
+          .querySelectorAll('.dia-semana input[type="checkbox"]')
+          .forEach((checkbox) => {
+            const dia = checkbox.value;
+            data[dia] = {
+              aberto: checkbox.checked,
+              abertura: form.querySelector(`[name="abertura_${dia}"]`).value,
+              fechamento: form.querySelector(`[name="fechamento_${dia}"]`)
+                .value,
+            };
+          });
+
+        try {
+          const response = await fetch("/gerenciar-servicos", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data),
+          });
+          const result = await response.json();
+          alert(result.message);
+        } catch (error) {
+          console.error("Erro:", error);
+          alert("Erro na comunicação com o servidor.");
+        }
+      }
+    </script>
+  </body>
+</html>

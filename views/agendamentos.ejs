@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Agendamentos - Painel Admin</title>
+    <link rel="stylesheet" href="/css/style.css">
+  <body>
+    <nav class="navbar">
+      <div class="nav-container">
+        <a href="/" class="logo">
+          <span class="logo-icon">💈</span>
+          Barbearia Elite
+        </a>
+        <div class="nav-links">
+          <a href="/" class="nav-link">🏠 Início</a>
+          <a href="/gerenciar-servicos" class="nav-link admin-btn">
+            🛠️ Gerenciar Serviços
+          </a>
+        </div>
+      </div>
+    </nav>
+    <main class="appointments-container">
+      <h1 class="appointments-title">📅 Painel de Agendamentos</h1>
+
+      <div id="mainView" class="view active">
+        <div class="calendar-container">
+          <div class="calendar-header">
+            <button class="calendar-nav" id="prevMonth">❮</button>
+            <div class="month-year" id="monthYear"></div>
+            <button class="calendar-nav" id="nextMonth">❯</button>
+          </div>
+          <div class="calendar-grid" id="calendarGrid">
+            <div class="weekday-header">Dom</div>
+            <div class="weekday-header">Seg</div>
+            <div class="weekday-header">Ter</div>
+            <div class="weekday-header">Qua</div>
+            <div class="weekday-header">Qui</div>
+            <div class="weekday-header">Sex</div>
+            <div class="weekday-header">Sáb</div>
+          </div>
+        </div>
+
+        <div class="all-appointments">
+          <h2
+            style="
+              padding: 1.5rem;
+              margin: 0;
+              background: #333;
+              color: white;
+              font-size: 1.3rem;
+            "
+          >
+            📋 Todos os Agendamentos
+          </h2>
+          <div id="allAppointmentsList"></div>
+        </div>
+      </div>
+
+      <div id="dayView" class="view">
+        <div class="day-view-container">
+          <div class="day-header">
+            <div class="day-title" id="dayTitle">📅 Agendamentos do Dia</div>
+            <button class="back-btn" id="backToMain">
+              ← Voltar para Visão Completa
+            </button>
+          </div>
+          <div id="dayAppointments" class="day-appointments"></div>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      // Injeta os dados do EJS para o JavaScript de forma segura
+      const agendamentos = <%- JSON.stringify(agendamentos || []) %>;
+
+      // Variáveis globais
+      let currentDate = new Date();
+      const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+
+      // Agrupa os agendamentos por data para facilitar o acesso
+      const agendamentosPorData = agendamentos.reduce((acc, ag) => {
+          // A data vem como 'YYYY-MM-DD', precisamos formatar para 'DD/MM/YYYY'
+          const [year, month, day] = ag.data.split('-');
+          const dataFormatada = `${day}/${month}/${year}`;
+          if (!acc[dataFormatada]) {
+              acc[dataFormatada] = [];
+          }
+          acc[dataFormatada].push(ag);
+          return acc;
+      }, {});
+
+      // Função para formatar data (ex: Date object -> 'DD/MM/YYYY')
+      function formatDateBR(date) {
+          const day = String(date.getDate()).padStart(2, '0');
+          const month = String(date.getMonth() + 1).padStart(2, '0');
+          const year = date.getFullYear();
+          return `${day}/${month}/${year}`;
+      }
+
+      // Função para gerar a lista completa de agendamentos
+      function generateAllAppointmentsList() {
+          const listContainer = document.getElementById('allAppointmentsList');
+          if (Object.keys(agendamentosPorData).length === 0) {
+               listContainer.innerHTML = `
+                  <div class="empty-state">
+                      <div class="empty-icon">🔍</div>
+                      <h3>Nenhum agendamento encontrado</h3>
+                      <p>Quando os clientes fizerem agendamentos, eles aparecerão aqui.</p>
+                  </div>`;
+              return;
+          }
+
+          let html = '';
+          // Ordena as datas antes de iterar
+          const sortedDates = Object.keys(agendamentosPorData).sort((a, b) => {
+              const [dayA, monthA, yearA] = a.split('/');
+              const [dayB, monthB, yearB] = b.split('/');
+              return new Date(`${yearA}-${monthA}-${dayA}`) - new Date(`${yearB}-${monthB}-${dayB}`);
+          });
+
+          for (const data of sortedDates) {
+              const ags = agendamentosPorData[data];
+              html += `
+                  <div class="date-section">
+                      <div class="date-header">📌 ${data} (${ags.length} cliente${ags.length !== 1 ? 's' : ''})</div>
+                      <div class="table-responsive">
+                          <table class="appointments-table">
+                              <thead>
+                                  <tr>
+                                      <th>🕐 Horário</th>
+                                      <th>👤 Nome</th>
+                                      <th>💇 Serviço</th>
+                                      <th>📱 Telefone</th>
+                                      <th>📞 Ações</th>
+                                  </tr>
+                              </thead>
+                              <tbody>
+                                  ${ags.map(ag => `
+                                      <tr>
+                                          <td><strong>${ag.hora}</strong></td>
+                                          <td>${ag.nome}</td>
+                                          <td>${ag.servico}</td>
+                                          <td>${ag.telefone}</td>
+                                          <td>
+                                              <a href="https://wa.me/55${ag.telefone.replace(/\D/g, '')}?text=Olá ${ag.nome}! Confirmando seu agendamento para ${data} às ${ag.hora}." target="_blank" class="whatsapp-btn">📲 WhatsApp</a>
+                                              <form action="/cancelamento_confirmacao" method="post" style="display:inline;" onsubmit="return confirm('Tem certeza?');">
+                                                  <input type="hidden" name="agendamento_id" value="${ag.id}">
+                                                  <button type="submit" class="remove-btn">🗑️ Remover</button>
+                                              </form>
+                                          </td>
+                                      </tr>
+                                  `).join('')}
+                              </tbody>
+                          </table>
+                      </div>
+                  </div>
+              `;
+          }
+          listContainer.innerHTML = html;
+      }
+
+      function generateCalendar(date) {
+          const year = date.getFullYear();
+          const month = date.getMonth();
+          document.getElementById('monthYear').textContent = `${meses[month]} ${year}`;
+
+          const grid = document.getElementById('calendarGrid');
+          // Limpa apenas os dias, mantém os cabeçalhos
+          grid.querySelectorAll('.calendar-day').forEach(node => node.remove());
+
+          const firstDay = new Date(year, month, 1);
+          const lastDay = new Date(year, month + 1, 0);
+
+          // Preenche os espaços vazios no início do mês
+          for (let i = 0; i < firstDay.getDay(); i++) {
+              grid.appendChild(document.createElement('div'));
+          }
+
+          // Adiciona os dias do mês
+          for (let day = 1; day <= lastDay.getDate(); day++) {
+              const cellDate = new Date(year, month, day);
+              const dateStr = formatDateBR(cellDate);
+
+              const dayElement = document.createElement('div');
+              dayElement.className = 'calendar-day';
+              dayElement.textContent = day;
+
+              if (agendamentosPorData[dateStr]) {
+                  dayElement.classList.add('has-appointments');
+                  dayElement.title = `${agendamentosPorData[dateStr].length} agendamento(s)`;
+              }
+
+              dayElement.addEventListener('click', () => showDayView(dateStr, cellDate));
+              grid.appendChild(dayElement);
+          }
+      }
+
+      function showDayView(dateStr, dateObj) {
+          document.getElementById('mainView').classList.remove('active');
+          document.getElementById('dayView').classList.add('active');
+
+          const dayNames = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+          document.getElementById('dayTitle').textContent = `📅 ${dayNames[dateObj.getDay()]}, ${dateStr}`;
+
+          const appointments = agendamentosPorData[dateStr] || [];
+          const container = document.getElementById('dayAppointments');
+
+          if (appointments.length === 0) {
+              container.innerHTML = `
+                  <div class="empty-state">
+                      <div class="empty-icon">📭</div>
+                      <h3>Nenhum agendamento para este dia</h3>
+                  </div>`;
+          } else {
+               container.innerHTML = `
+                  <div class="table-responsive">
+                      <table class="appointments-table">
+                          <thead>
+                              <tr>
+                                  <th>🕐 Horário</th>
+                                  <th>👤 Nome</th>
+                                  <th>💇 Serviço</th>
+                                  <th>📞 Ações</th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                              ${appointments.map(ag => `
+                                  <tr>
+                                      <td><strong>${ag.hora}</strong></td>
+                                      <td>${ag.nome}</td>
+                                      <td>${ag.servico}</td>
+                                      <td>
+                                          <a href="https://wa.me/55${ag.telefone.replace(/\D/g, '')}" target="_blank" class="whatsapp-btn">📲 WhatsApp</a>
+                                          <form action="/remover-agendamento" method="post" style="display:inline;" onsubmit="return confirm('Tem certeza?');">
+                                              <input type="hidden" name="agendamento_id" value="${ag.id}">
+                                              <button type="submit" class="remove-btn">🗑️ Remover</button>
+                                          </form>
+                                      </td>
+                                  </tr>
+                              `).join('')}
+                          </tbody>
+                      </table>
+                  </div>`;
+          }
+      }
+
+      function showMainView() {
+          document.getElementById('dayView').classList.remove('active');
+          document.getElementById('mainView').classList.add('active');
+      }
+
+      // Event Listeners
+      document.getElementById('prevMonth').addEventListener('click', () => {
+          currentDate.setDate(1); // Evita bugs na virada do mês
+          currentDate.setMonth(currentDate.getMonth() - 1);
+          generateCalendar(currentDate);
+      });
+
+      document.getElementById('nextMonth').addEventListener('click', () => {
+          currentDate.setDate(1);
+          currentDate.setMonth(currentDate.getMonth() + 1);
+          generateCalendar(currentDate);
+      });
+
+      document.getElementById('backToMain').addEventListener('click', showMainView);
+
+      // Inicialização
+      document.addEventListener('DOMContentLoaded', () => {
+          generateCalendar(currentDate);
+          generateAllAppointmentsList();
+      });
+    </script>
+  </body>
+</html>

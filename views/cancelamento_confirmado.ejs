@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cancelamento - Barbearia Elite</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="nav-container">
+        <a href="/" class="logo">
+          <span class="logo-icon">💈</span>
+          Barbearia Elite
+        </a>
+        <div class="nav-links">
+          <a href="/" class="nav-link"> 🏠 Início </a>
+        </div>
+      </div>
+    </nav>
+
+    <main class="confirmation-container">
+      <div class="confirmation-card">
+        <% if (status === "sucesso") { %>
+        <div class="success-icon">✅</div>
+        <h2>Agendamento Cancelado!</h2>
+        <p>Seu agendamento foi cancelado com sucesso.</p>
+
+        <% } else if (status === "nao_encontrado") { %>
+        <div class="error-icon">⚠️</div>
+        <h2>Erro ao Cancelar</h2>
+        <p>
+          O agendamento com este ID não foi encontrado. Por favor, verifique o
+          link ou o ID fornecido.
+        </p>
+
+        <% } else { %>
+        <div class="error-icon">❌</div>
+        <h2>Erro Inesperado</h2>
+        <p>
+          Ocorreu um erro ao processar sua solicitação. Por favor, tente
+          novamente.
+        </p>
+        <% } %>
+
+        <a href="/" class="back-btn" style="margin-top: 2rem">
+          ← Voltar ao Início
+        </a>
+      </div>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,395 @@
+/* =================================================================
+    ARQUIVO CSS UNIFICADO - Barbearia Elite
+   ================================================================= */
+
+/* Reset e Variáveis Globais */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --primary-gold: #d4af37;
+  --primary-gold-dark: #b8941f;
+  --dark-bg: #121212;
+  --darker-bg: #0d0d0d;
+  --card-bg: #1e1e1e;
+  --text-light: #f5f5f5;
+  --text-dark: #222;
+  --gray-light: #e9ecef;
+  --gray-medium: #495057;
+  --border-color: rgba(212, 175, 55, 0.2);
+  --success: #28a745;
+  --danger: #dc3545;
+  --border-radius: 12px;
+  --shadow-md: 0 8px 20px rgba(0, 0, 0, 0.3);
+  --transition: all 0.3s ease;
+}
+
+body {
+  font-family: "Roboto", sans-serif;
+  background-color: var(--dark-bg);
+  color: var(--text-light);
+  min-height: 100vh;
+  line-height: 1.6;
+  display: flex;
+  flex-direction: column;
+}
+
+.container,
+.confirmation-page-container,
+.appointments-container,
+.login-container {
+  max-width: 1100px;
+  margin: 3rem auto;
+  padding: 0 1.5rem;
+  flex-grow: 1;
+}
+
+/* Navbar */
+.navbar {
+  background: rgba(18, 18, 18, 0.95);
+  backdrop-filter: blur(10px);
+  padding: 1rem 0;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.nav-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 1.5rem;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary-gold);
+  text-decoration: none;
+  font-family: "Poppins", sans-serif;
+}
+
+.logo-icon {
+  margin-right: 0.5rem;
+  font-size: 1.75rem;
+}
+.nav-links {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.nav-link,
+.logout-btn,
+.admin-btn {
+  color: var(--text-light);
+  text-decoration: none;
+  padding: 0.75rem 1.25rem;
+  border-radius: 8px;
+  transition: var(--transition);
+  font-weight: 500;
+}
+
+.nav-link:hover {
+  background-color: rgba(212, 175, 55, 0.1);
+  color: var(--primary-gold);
+}
+.admin-btn {
+  background: var(--primary-gold);
+  color: var(--dark-bg);
+  font-weight: 600;
+}
+.admin-btn:hover {
+  background: var(--primary-gold-dark);
+}
+.logout-btn {
+  background: var(--danger);
+  color: var(--text-light);
+}
+.logout-btn:hover {
+  background: #c82333;
+}
+
+/* Header */
+.main-header {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: linear-gradient(rgba(18, 18, 18, 0.8), rgba(13, 13, 13, 0.8));
+  border-bottom: 2px solid var(--primary-gold);
+}
+
+.main-header h1 {
+  font-family: "Poppins", sans-serif;
+  font-size: clamp(2rem, 5vw, 3rem);
+  margin-bottom: 0.5rem;
+  color: var(--primary-gold);
+}
+
+/* Cards e Formulários */
+.form-card,
+.login-card,
+.confirmation-box {
+  background: var(--card-bg);
+  border-radius: 16px;
+  padding: 2.5rem;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border-color);
+  margin-bottom: 2rem;
+}
+
+.form-card h1,
+.form-card h2 {
+  font-family: "Poppins", sans-serif;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+input[type="text"],
+input[type="tel"],
+input[type="date"],
+input[type="number"],
+select {
+  width: 100%;
+  padding: 0.875rem;
+  border: 1px solid #333;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: var(--transition);
+  background: #2b2b2b;
+  color: var(--text-light);
+}
+
+input:focus,
+select:focus {
+  outline: none;
+  border-color: var(--primary-gold);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.3);
+}
+
+/* Botões */
+.btn-primary,
+.btn-cancel,
+.btn-remove {
+  width: 100%;
+  padding: 1rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  text-align: center;
+  display: block;
+  text-decoration: none;
+}
+
+.btn-primary {
+  background: linear-gradient(
+    45deg,
+    var(--primary-gold),
+    var(--primary-gold-dark)
+  );
+  color: var(--dark-bg);
+  margin-top: 1rem;
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+.btn-cancel {
+  background: var(--danger);
+  color: var(--text-light);
+}
+.btn-remove {
+  background: var(--danger);
+  color: var(--text-light);
+  padding: 0.6rem 1.2rem;
+  width: auto;
+}
+
+/* =================================================================
+    ESTILOS PARA O PAINEL DE AGENDAMENTOS (DO ARQUIVO ANTIGO)
+   ================================================================= */
+.appointments-title {
+  font-size: 2.5rem;
+  color: var(--primary-gold);
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.view {
+  display: none;
+}
+.view.active {
+  display: block;
+}
+
+.calendar-container {
+  background: var(--card-bg);
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border-color);
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+.calendar-nav {
+  background: var(--primary-gold);
+  color: var(--dark-bg);
+  border: none;
+  padding: 0.8rem 1.2rem;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1.2rem;
+  transition: var(--transition);
+}
+.calendar-nav:hover {
+  background: var(--primary-gold-dark);
+}
+.month-year {
+  font-size: 1.6rem;
+  font-weight: bold;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+.weekday-header {
+  background: #333;
+  color: white;
+  padding: 1rem;
+  text-align: center;
+  font-weight: bold;
+}
+
+.calendar-day {
+  background: #2b2b2b;
+  padding: 1rem;
+  text-align: center;
+  cursor: pointer;
+  transition: var(--transition);
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.calendar-day:hover {
+  background: var(--primary-gold-dark);
+  color: var(--dark-bg);
+}
+.calendar-day.has-appointments {
+  background: rgba(212, 175, 55, 0.15);
+  color: var(--primary-gold);
+  font-weight: bold;
+}
+.calendar-day.other-month {
+  color: #666;
+  cursor: default;
+}
+
+.all-appointments,
+.day-view-container {
+  background: var(--card-bg);
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border-color);
+}
+
+.date-header {
+  background: #333;
+  padding: 1.2rem 1.5rem;
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.day-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 3px solid var(--primary-gold);
+}
+.day-title {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.back-btn {
+  background: var(--gray-medium);
+  color: var(--text-light);
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  text-decoration: none;
+}
+.back-btn:hover {
+  background: #5a6268;
+}
+
+.table-responsive {
+  overflow-x: auto;
+}
+.appointments-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+.appointments-table th,
+.appointments-table td {
+  padding: 1.2rem;
+  text-align: left;
+  border-bottom: 1px solid #333;
+}
+.appointments-table th {
+  background: #252525;
+  font-weight: bold;
+}
+.appointments-table tbody tr:hover {
+  background: #252525;
+}
+.appointments-table td strong {
+  color: var(--primary-gold);
+}
+.whatsapp-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #25d366;
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+}
