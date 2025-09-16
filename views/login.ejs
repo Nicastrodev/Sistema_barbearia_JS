@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - Área Restrita</title>
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <div class="login-container">
+      <br class="login-card">
+        <span
+          class="logo-icon"
+          style="font-size: 3rem; margin-bottom: 1rem; display: block"
+          >🔐</span
+        >
+        <h2>Área Restrita</h2> </br>
+        <p style="margin-top: -1.5rem; margin-bottom: 2rem; color: #999">
+          Acesso exclusivo para administradores
+        </p>
+
+        <form action="/login" method="POST">
+          <div class="form-group">
+            <label for="password">🔑 Senha de Acesso:</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              placeholder="Digite a senha de administrador"
+              required
+            />
+          </div>
+
+          <% if (typeof error !== 'undefined' && error) { %>
+          <p
+            style="color: var(--danger); margin-bottom: 1rem; font-weight: bold"
+          >
+            <%= error %>
+          </p>
+          <% } %>
+
+          <button type="submit" class="btn-primary">
+            🚀 Entrar no Sistema
+          </button>
+        </form>
+        <a
+          href="/"
+          style="
+            display: block;
+            margin-top: 1.5rem;
+            color: #999;
+            text-decoration: none;
+          "
+          >← Voltar ao site principal</a
+        >
+      </div>
+    </div>
+  </body>
+</html>

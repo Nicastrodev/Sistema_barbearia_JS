@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Painel - Barbearia Elite</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Roboto:wght@300;400;500;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="nav-container">
+        <a href="/" class="logo">
+          <span class="logo-icon">💈</span>
+          Barbearia Elite
+        </a>
+        <div class="nav-links">
+          <a href="/agendamentos" class="nav-link">
+            📅 Agendamentos
+          </a>
+          <a href="/gerenciar-servicos" class="nav-link">
+            🛠️ Gerenciar Serviços
+          </a>
+          <a href="/logout" class="logout-btn">🚪 Sair</a>
+        </div>
+      </div>
+    </nav>
+
+    <main class="container">
+      <div class="form-card">
+        <h1>📋 Painel de Agendamentos</h1>
+        <table class="appointments-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nome</th>
+              <th>Telefone</th>
+              <th>Serviço</th>
+              <th>Data</th>
+              <th>Hora</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% agendamentos.forEach(agendamento => { %>
+            <tr>
+              <td><%= agendamento.id %></td>
+              <td><%= agendamento.nome %></td>
+              <td><%= agendamento.telefone %></td>
+              <td><%= agendamento.servicoAgendado ? agendamento.servicoAgendado.nome : 'N/A' %></td>
+              <td><%= new Date(agendamento.data).toLocaleDateString('pt-BR') %></td>
+              <td><%= agendamento.hora %></td>
+            </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+    </main>
+  </body>
+</html>
