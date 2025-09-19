@@ -242,11 +242,11 @@ input:focus, select:focus {
 }
 
 .appointments-title {
-    font-size: 2.5rem;
+    font-size: 1.5rem; /* menor e mais equilibrado */
     color: #d4af37;
     text-align: center;
-    margin-bottom: 2rem;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    margin-bottom: 1.5rem;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.25); /* sombra mais leve */
 }
 
 /* Sistema de Views */
@@ -978,4 +978,247 @@ input:focus, select:focus {
         padding: 0.4rem;
         font-size: 0.7rem;
     }
+}
+/* ================================
+   ESTILOS DE CONFIRMAÇÃO AJUSTADOS
+================================ */
+
+/* Caixa principal */
+.confirmation-box {
+  background: #2b2b2b;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+  padding: 2rem;
+  color: #f0f0f0;
+  text-align: center;
+  overflow-wrap: break-word;
+}
+
+/* Cabeçalho de sucesso */
+.success-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap; /* permite quebrar no mobile */
+}
+
+.success-icon-large {
+  font-size: 2.5rem;
+  color: #28a745;
+  flex-shrink: 0;
+}
+
+.confirmation-box h2 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin: 0;
+  line-height: 1.2;
+  color: #fff;
+}
+
+/* Texto normal */
+.confirmation-box p {
+  font-size: 1rem;
+  color: #c7c7c7;
+  line-height: 1.5;
+  margin: 0.5rem 0 1rem;
+}
+
+/* Seção de detalhes */
+.details-section {
+  margin-top: 1.5rem;
+  background: #333;
+  padding: 1.5rem;
+  border-radius: 8px;
+  text-align: left;
+}
+
+.details-section h3 {
+  font-size: 1.25rem;
+  color: #d4af37;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.details-section p {
+  margin-bottom: 0.6rem;
+  color: #e0e0e0;
+}
+
+/* Bloco de ID */
+.id-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #1a1a1a;
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: 6px;
+  padding: 0.6rem 1rem;
+  flex-wrap: wrap; /* quebra se não couber */
+}
+
+.id-container code {
+  flex: 1;
+  color: #d4af37;
+  font-family: "Roboto Mono", monospace;
+  font-size: 0.95rem;
+  word-break: break-all;
+}
+
+.copy-btn {
+  background: #555;
+  color: #fff;
+  border: none;
+  padding: 0.5rem 0.8rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.copy-btn:hover {
+  background: #777;
+}
+
+/* Botões de ação */
+.action-section {
+  margin-top: 2rem;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  padding-top: 1.5rem;
+}
+
+.action-section h3 {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  color: #fff;
+  text-align: center;
+}
+
+.action-buttons-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Responsividade */
+@media (max-width: 600px) {
+  .confirmation-box h2 {
+    font-size: 1.5rem;
+  }
+  .details-section h3,
+  .action-section h3 {
+    font-size: 1rem;
+  }
+}
+/* Botão WhatsApp */
+.whatsapp-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 1.5rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
+  background-color: #25d366;
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.whatsapp-btn:hover {
+  background-color: #1ebe56;
+  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
+}
+
+/* Botão Cancelar Agendamento */
+.cancel-appointment-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 1.5rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  background-color: #dc3545;
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.cancel-appointment-btn:hover {
+  background-color: #c82333;
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+}
+/* HEADER MAIS COMPACTO */
+.main-header {
+    text-align: center;
+    padding: 2rem 1rem; /* reduzido */
+    background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100"><path fill="%23d4af37" opacity="0.1" d="M0,50 Q250,0 500,50 T1000,50 L1000,100 L0,100 Z"/></svg>');
+    background-size: cover;
+}
+
+.main-header h1 {
+    font-size: 2.5rem; /* menor */
+    margin-bottom: 0.8rem;
+    color: #d4af37;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+.main-header p {
+    font-size: 1rem; /* menor */
+    color: #cccccc;
+    margin-bottom: 1.5rem;
+}
+
+/* BOTÃO WHATSAPP MENOR */
+.whatsapp-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.4rem 0.8rem; /* reduzido */
+    border-radius: 6px;
+    font-size: 0.8rem; /* menor */
+    font-weight: 600;
+    text-decoration: none;
+    background-color: #25d366;
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.whatsapp-btn:hover {
+    background-color: #1ebe56;
+    box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
+    transform: translateY(-2px);
+}
+/* Reduz o tamanho do header principal */
+.main-header {
+    padding: 2rem !important;
+}
+
+.main-header h1 {
+    font-size: 2rem !important;
+}
+/* Reduz o padding da barra de navegação */
+.navbar {
+    padding: 0.5rem 0 !important;
+}
+/* Diminui o tamanho da fonte do logo */
+.logo {
+    font-size: 1.2rem !important;
+}
+
+/* Garante que o ícone do logo também diminua */
+.logo-icon {
+    font-size: 1.4rem !important;
+} 
+h1.appointments-title {
+    font-size: 1.3rem !important;
+    line-height: 1.3 !important;
+    margin: 1rem 0 !important;
+    text-shadow: none !important; /* sombra retirada pra ficar mais clean */
 }

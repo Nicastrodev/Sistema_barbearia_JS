@@ -47,11 +47,11 @@
         <div class="all-appointments">
           <h2
             style="
-              padding: 1.5rem;
+              padding: 1.0rem;
               margin: 0;
               background: #333;
               color: white;
-              font-size: 1.3rem;
+              font-size: 1.0rem;
             "
           >
             📋 Todos os Agendamentos
@@ -201,7 +201,7 @@
         document.getElementById('dayView').classList.add('active');
 
         const dayNames = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
-        document.getElementById('dayTitle').textContent = `📅 ${dayNames[dateObj.getDay()]}, ${dateStr}`;
+        document.getElementById('dayTitle').textContent = ` ${dayNames[dateObj.getDay()]}, ${dateStr}`;
 
         const appointments = agendamentosPorData[dateStr] || [];
         const container = document.getElementById('dayAppointments');
@@ -234,7 +234,7 @@
                       <a href="https://wa.me/55${ag.telefone.replace(/\D/g, '')}" 
                          target="_blank" class="whatsapp-btn">📲 WhatsApp</a>
                       <form action="/remover-agendamento" method="post" style="display:inline;" 
-                            onsubmit="return confirm('Tem certeza que deseja cancelar este agendamento?');">
+                            onsubmit="return confirm('⚠️Tem certeza que deseja cancelar este agendamento?⚠️');">
                         <input type="hidden" name="agendamento_id" value="${ag.id}">
                         <button type="submit" class="remove-btn">🗑️ Remover</button>
                       </form>

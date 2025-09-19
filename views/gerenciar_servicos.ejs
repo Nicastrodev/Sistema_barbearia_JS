@@ -30,7 +30,8 @@
       }
       .interval-details {
         font-size: 1rem;
-        color: #ffffff;
+        color: 
+        #ffffff;
       }
       .btn-remove-interval {
         background-color: #dc3545;
@@ -54,7 +55,7 @@
         >
         <div class="nav-links">
           <a href="/agendamentos" class="nav-link">📅 Agendamentos</a>
-          <a href="/logout" class="logout-btn">🚪 Sair</a>
+          <a href="/logout" class="logout-btn">Sair</a>
         </div>
       </div>
     </nav>
@@ -63,7 +64,7 @@
       <div class="form-card">
         <h1>🛠️ Gerenciar Serviços, Horários e Intervalos</h1>
 
-        <div class="section-container">
+        <br class="section-container">
           <h2>➕ Adicionar Novo Serviço</h2>
           <form
             method="POST"
@@ -108,7 +109,7 @@
             </div>
             <button type="submit" class="btn-primary">Adicionar Serviço</button>
           </form>
-
+        </br>
           <hr class="separator" />
 
           <h2>Serviços Atuais</h2>
@@ -145,7 +146,8 @@
         </div>
 
         <div class="section-container">
-          <h2>Gerenciar Horários de Atendimento</h2>
+    <h2 class="title-small">Gerenciar Horários de Atendimento</h2>
+    <br>
           <form id="horarioForm" onsubmit="salvarHorarios(event)">
             <% Object.keys(configuracoes).forEach(dia => { const config =
             configuracoes[dia]; %>
@@ -186,10 +188,10 @@
         <hr class="separator" />
 
         <div class="section-container">
-          <h2>⏲️ Gerenciar Intervalos</h2>
+    <h2 class="title-small">⏲️ Gerenciar Intervalos</h2>
           <div class="row">
             <div class="col-md-6">
-              <h4>Adicionar Novo Intervalo</h4>
+          <br>
               <form action="/adicionar-intervalo" method="POST">
                 <div class="form-group">
                   <label for="dia_semana">Dia da Semana:</label>

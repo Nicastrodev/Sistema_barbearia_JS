@@ -507,3 +507,61 @@ input:checked + .slider:before {
         white-space: nowrap; /* Impede que o texto do botão quebre em várias linhas */
     }
 }
+/* Remove bordas de elementos específicos */
+.navbar {
+    border-bottom: none !important;
+}
+
+.form-card, .login-card, .confirmation-box {
+    border: none !important;
+}
+
+.section-container {
+    border-left: none !important;
+}
+
+.service-item {
+    border: none !important;
+}
+
+/* Remove o separador horizontal */
+.separator {
+    display: none !important;
+}
+
+/* Reduz o tamanho da fonte dos títulos */
+.main-header h1 {
+    font-size: 1.8rem; /* Era 2rem */
+}
+
+.form-card h1 {
+    font-size: 1.3rem; /* Era 1.5rem */
+}
+
+.form-card h2 {
+    font-size: 1.1rem; /* Era 1.25rem */
+}
+
+.form-card h3 {
+    font-size: 0.9rem; /* Era 1rem */
+}
+
+/* Reduz o tamanho da fonte dos títulos */
+.main-header h1 {
+    font-size: 1.8rem;
+}
+
+.form-card h1 {
+    font-size: 1.3rem;
+}
+
+.form-card h2 {
+    font-size: 1.1rem; /* This will affect "Gerenciar Horários de Atendimento" and "Gerenciar Intervalos" */
+}
+
+.form-card h3 {
+    font-size: 0.9rem;
+}
+.title-small {
+    font-size: 1.2rem; /* Altere para o tamanho que você preferir */
+}
