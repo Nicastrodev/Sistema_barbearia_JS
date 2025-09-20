@@ -4,13 +4,18 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Agendamento Confirmado - Barbearia Elite</title>
+<<<<<<< HEAD
     <link rel="stylesheet" href="/css/style.css" />
+=======
+    <link rel="stylesheet" href="/css/agendamento.css" />
+>>>>>>> origin/master
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Roboto:wght@300;400;500;700&display=swap"
       rel="stylesheet"
     />
+<<<<<<< HEAD
     <style>
       /* Seus estilos CSS permanecem aqui, sem alterações */
       .confirmation-page-container {
@@ -169,14 +174,26 @@
         }
       }
     </style>
+=======
+   
+>>>>>>> origin/master
   </head>
   <body>
     <nav class="navbar">
       <div class="nav-container">
+<<<<<<< HEAD
         <a href="/" class="logo"
           ><span class="logo-icon">💈</span> Barbearia Elite</a
         >
         <div class="nav-links"><a href="/" class="nav-link">🏠 Início</a></div>
+=======
+        <a href="/" class="logo">
+          <span class="logo-icon">💈</span> Barbearia Elite
+        </a>
+        <div class="nav-links">
+          <a href="/" class="nav-link">🏠 Início</a>
+        </div>
+>>>>>>> origin/master
       </div>
     </nav>
 
@@ -207,9 +224,15 @@
             </button>
           </div>
         </div>
+<<<<<<< HEAD
 
         <div class="action-section">
           <h3>Precisa de ajuda ou quer alterar algo?</h3>
+=======
+ <p>⚠️Guarde este ID caso precise cancelar seu agendamento⚠️.</p>
+        <div class="action-section">
+          <h3>Precisa de ajuda? Fale conosco 📩</h3>
+>>>>>>> origin/master
           <div class="action-buttons-group">
             <a
               href="https://wa.me/5511999999999?text=Ol%C3%A1!%20Tenho%20uma%20d%C3%BAvida%20sobre%20meu%20agendamento%20de%20<%= data %>%20%C3%A0s%20<%= hora %>.%20ID:%20<%= id %>"
@@ -218,6 +241,7 @@
             >
               📲 Falar no WhatsApp
             </a>
+<<<<<<< HEAD
             <form
               action="/cancelar-agendamento"
               method="POST"
@@ -229,6 +253,12 @@
                 class="cancel-appointment-btn"
                 onclick="return confirm('Tem certeza que deseja cancelar?');"
               >
+=======
+
+            <form id="cancelamentoForm" style="width: 100%">
+              <input type="hidden" name="id_cancelar" value="<%= id %>" />
+              <button type="submit" class="cancel-appointment-btn">
+>>>>>>> origin/master
                 ❌ Cancelar Agendamento
               </button>
             </form>
@@ -253,6 +283,62 @@
             alert("Erro ao copiar. Por favor, copie manualmente.");
           });
       }
+<<<<<<< HEAD
     </script>
   </body>
 </html>
+=======
+
+      const formCancelamento = document.getElementById("cancelamentoForm");
+      if (formCancelamento) {
+        formCancelamento.addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          if (!confirm("⚠️Tem certeza que deseja cancelar o agendamento?⚠️")) {
+            return;
+          }
+
+          const idParaCancelar = formCancelamento.querySelector(
+            '[name="id_cancelar"]'
+          ).value;
+
+          try {
+            const response = await fetch("/cancelar-agendamento", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ id_cancelar: idParaCancelar }),
+            });
+
+            // Se a resposta da requisição não for OK, algo deu errado no servidor
+            if (!response.ok) {
+              window.location.href = "/cancelamento_confirmado/erro";
+              return;
+            }
+
+            // Tenta processar a resposta como JSON
+            const contentType = response.headers.get("content-type");
+            if (contentType && contentType.indexOf("application/json") !== -1) {
+              const result = await response.json();
+              if (result.success) {
+                window.location.href = "/cancelamento_confirmado/sucesso";
+              } else {
+                window.location.href = "/cancelamento_confirmado/nao_encontrado";
+              }
+            } else {
+              // Se a resposta não for JSON (por exemplo, um redirecionamento),
+              // assume que foi um sucesso e redireciona.
+              window.location.href = "/cancelamento_confirmado/sucesso";
+            }
+          } catch (error) {
+            console.error("Erro ao cancelar agendamento:", error);
+            // Este bloco agora lida apenas com erros de rede ou de requisição.
+            window.location.href = "/cancelamento_confirmado/erro";
+          }
+        });
+      }
+    </script>
+  </body>
+</html>
+>>>>>>> origin/master

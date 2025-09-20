@@ -56,6 +56,7 @@
           </div>
           <div class="form-group">
             <label for="servico">💇 Tipo de Serviço:</label>
+<<<<<<< HEAD
             <select id="servico" name="servico" required>
               <option value="">Selecione um serviço...</option>
               <% if (servicos && servicos.length > 0) { %> <%
@@ -64,6 +65,13 @@
                 value="<%= servico.nome %>"
                 data-preco="<%= servico.preco %>"
               >
+=======
+            <select id="servico" name="servicoId" required>
+              <option value="">Selecione um serviço...</option>
+              <% if (servicos && servicos.length > 0) { %> <%
+              servicos.forEach(servico => { %>
+              <option value="<%= servico.id %>" data-preco="<%= servico.preco %>">
+>>>>>>> origin/master
                 <%= servico.descricao || `${servico.nome} - R$
                 ${Number(servico.preco).toFixed(2).replace('.', ',')}` %>
               </option>
@@ -77,7 +85,11 @@
           <div class="form-group">
             <label for="hora">🕐 Horário:</label>
             <select id="hora" name="hora" required disabled>
+<<<<<<< HEAD
               <option value="">Selecione a data primeiro...</option>
+=======
+              <option value="">Selecione a data e o serviço...</option>
+>>>>>>> origin/master
             </select>
           </div>
           <button type="submit" class="btn-primary" id="btnAgendar">
@@ -103,7 +115,11 @@
           <button
             type="submit"
             class="btn-cancel"
+<<<<<<< HEAD
             onclick="return confirm('Tem certeza?');"
+=======
+            onclick="return confirm('⚠️Tem certeza que deseja cancelar esse agendamento?⚠️');"
+>>>>>>> origin/master
           >
             🗑️ Cancelar Agendamento
           </button>

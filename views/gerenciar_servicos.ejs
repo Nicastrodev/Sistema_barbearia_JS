@@ -11,6 +11,44 @@
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Roboto:wght@300;400;500;700&display=swap"
       rel="stylesheet"
     />
+<<<<<<< HEAD
+=======
+    <style>
+      .interval-list-container {
+        margin-top: 2rem;
+      }
+      .interval-list {
+        list-style: none;
+        padding: 0;
+      }
+      .interval-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        margin-bottom: 0.5rem;
+      }
+      .interval-details {
+        font-size: 1rem;
+        color: 
+        #ffffff;
+      }
+      .btn-remove-interval {
+        background-color: #dc3545;
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+      .btn-remove-interval:hover {
+        background-color: #c82333;
+      }
+    </style>
+>>>>>>> origin/master
   </head>
   <body>
     <nav class="navbar">
@@ -20,17 +58,28 @@
         >
         <div class="nav-links">
           <a href="/agendamentos" class="nav-link">📅 Agendamentos</a>
+<<<<<<< HEAD
           <a href="/logout" class="logout-btn">🚪 Sair</a>
+=======
+          <a href="/logout" class="logout-btn">Sair</a>
+>>>>>>> origin/master
         </div>
       </div>
     </nav>
 
     <main class="container">
       <div class="form-card">
+<<<<<<< HEAD
         <h1>🛠️ Gerenciar Serviços e Horários</h1>
 
         <div class="section-container">
           <h2>Adicionar Novo Serviço</h2>
+=======
+        <h1>🛠️ Gerenciar Serviços, Horários e Intervalos</h1>
+
+        <br class="section-container">
+          <h2>➕ Adicionar Novo Serviço</h2>
+>>>>>>> origin/master
           <form
             method="POST"
             action="/gerenciar-servicos"
@@ -48,6 +97,10 @@
                 id="preco"
                 name="preco"
                 step="0.01"
+<<<<<<< HEAD
+=======
+                min="0"
+>>>>>>> origin/master
                 required
               />
             </div>
@@ -60,9 +113,26 @@
                 placeholder="Ex: Máquina e tesoura, finalização..."
               />
             </div>
+<<<<<<< HEAD
             <button type="submit" class="btn-primary">Adicionar Serviço</button>
           </form>
 
+=======
+            <div class="form-group">
+              <label for="duracao">Duração (em minutos):</label>
+              <input
+                type="number"
+                id="duracao"
+                name="duracao"
+                min="1"
+                required
+                value="30"
+              />
+            </div>
+            <button type="submit" class="btn-primary">Adicionar Serviço</button>
+          </form>
+        </br>
+>>>>>>> origin/master
           <hr class="separator" />
 
           <h2>Serviços Atuais</h2>
@@ -99,14 +169,28 @@
         </div>
 
         <div class="section-container">
+<<<<<<< HEAD
           <h2>Gerenciar Horários de Atendimento</h2>
+=======
+    <h2 class="title-small">Gerenciar Horários de Atendimento</h2>
+    <br>
+>>>>>>> origin/master
           <form id="horarioForm" onsubmit="salvarHorarios(event)">
             <% Object.keys(configuracoes).forEach(dia => { const config =
             configuracoes[dia]; %>
             <div class="form-group dia-semana">
               <label class="switch">
+<<<<<<< HEAD
                 <input type="checkbox" name="dia" value="<%= dia %>" <%=
                 config.aberto ? 'checked' : '' %>>
+=======
+                <input
+                  type="checkbox"
+                  name="dia"
+                  value="<%= dia %>"
+                  <%= config.aberto ? 'checked' : '' %>
+                />
+>>>>>>> origin/master
                 <span class="slider round"></span>
               </label>
               <span class="dia-label"><%= dia %></span>
@@ -132,6 +216,63 @@
             </button>
           </form>
         </div>
+<<<<<<< HEAD
+=======
+
+        <hr class="separator" />
+
+        <div class="section-container">
+    <h2 class="title-small">⏲️ Gerenciar Intervalos</h2>
+          <div class="row">
+            <div class="col-md-6">
+          <br>
+              <form action="/adicionar-intervalo" method="POST">
+                <div class="form-group">
+                  <label for="dia_semana">Dia da Semana:</label>
+                  <select name="dia_semana" class="form-control" required>
+                    <option value="Domingo">Domingo</option>
+                    <option value="Segunda-feira">Segunda-feira</option>
+                    <option value="Terça-feira">Terça-feira</option>
+                    <option value="Quarta-feira">Quarta-feira</option>
+                    <option value="Quinta-feira">Quinta-feira</option>
+                    <option value="Sexta-feira">Sexta-feira</option>
+                    <option value="Sábado">Sábado</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="inicio">Início:</label>
+                  <input type="time" name="inicio" class="form-control" required />
+                </div>
+                <div class="form-group">
+                  <label for="fim">Fim:</label>
+                  <input type="time" name="fim" class="form-control" required />
+                </div>
+                <button type="submit" class="btn-primary mt-2">Adicionar Intervalo</button>
+              </form>
+            </div>
+            <div class="col-md-6 interval-list-container">
+              <h4>Intervalos Cadastrados</h4>
+              <ul class="interval-list">
+                <% if (intervalos && intervalos.length > 0) { %>
+                <% intervalos.forEach(intervalo => { %>
+                <li class="interval-item">
+                  <span class="interval-details">
+                    <%= intervalo.dia_semana %>: <%= intervalo.inicio.substring(0, 5) %> - <%= intervalo.fim.substring(0, 5) %>
+                  </span>
+                  <form action="/remover-intervalo" method="POST" onsubmit="return confirm('Tem certeza que deseja remover este intervalo?');">
+                    <input type="hidden" name="id" value="<%= intervalo.id %>" />
+                    <button type="submit" class="btn-remove-interval">Remover</button>
+                  </form>
+                </li>
+                <% }); %>
+                <% } else { %>
+                <p>Nenhum intervalo cadastrado ainda.</p>
+                <% } %>
+              </ul>
+            </div>
+          </div>
+        </div>
+>>>>>>> origin/master
       </div>
     </main>
 
@@ -180,4 +321,8 @@
       }
     </script>
   </body>
+<<<<<<< HEAD
 </html>
+=======
+</html>
+>>>>>>> origin/master

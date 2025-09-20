@@ -20,6 +20,14 @@ const Servico = sequelize.define('Servico', {
     descricao: {
         type: DataTypes.STRING,
         allowNull: true // A descrição é opcional
+<<<<<<< HEAD
+=======
+    },
+    duracao: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 30 // Duração padrão em minutos
+>>>>>>> origin/master
     }
 }, {
     // Opções do modelo
