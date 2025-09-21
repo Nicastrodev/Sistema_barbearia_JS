@@ -32,7 +32,7 @@ const Servico = sequelize.define(
   {
     // Opções do modelo
     tableName: "servicos", // Garante que o nome da tabela seja 'servicos'
-    timestamps: false, // Desativa 'createdAt' e 'updatedAt'
+    timestamps: false, // Desativa as colunas 'createdAt' e 'updatedAt' se você não as tiver
   }
 );
 

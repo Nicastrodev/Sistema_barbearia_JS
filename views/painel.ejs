@@ -15,32 +15,16 @@
   <body>
     <nav class="navbar">
       <div class="nav-container">
-<<<<<<< HEAD
-        <a href="{{ url_for('index') }}" class="logo">
-=======
         <a href="/" class="logo">
->>>>>>> origin/master
           <span class="logo-icon">💈</span>
           Barbearia Elite
         </a>
         <div class="nav-links">
-<<<<<<< HEAD
-          <a href="{{ url_for('agendamentos') }}" class="nav-link">
-            📅 Agendamentos
-          </a>
-          <a href="{{ url_for('gerenciar_servicos') }}" class="nav-link">
-            🛠️ Gerenciar Serviços
-          </a>
-          <a href="{{ url_for('logout') }}" class="logout-btn">🚪 Sair</a>
-=======
-          <a href="/agendamentos" class="nav-link">
-            📅 Agendamentos
-          </a>
+          <a href="/agendamentos" class="nav-link"> 📅 Agendamentos </a>
           <a href="/gerenciar-servicos" class="nav-link">
             🛠️ Gerenciar Serviços
           </a>
           <a href="/logout" class="logout-btn">🚪 Sair</a>
->>>>>>> origin/master
         </div>
       </div>
     </nav>
@@ -60,36 +44,24 @@
             </tr>
           </thead>
           <tbody>
-<<<<<<< HEAD
-            {% for ag in agendamentos %}
-            <tr>
-              <td>{{ ag[0] }}</td>
-              <td>{{ ag[1] }}</td>
-              <td>{{ ag[2] }}</td>
-              <td>{{ ag[3] }}</td>
-              <td>{{ ag[4] }}</td>
-              <td>{{ ag[5] }}</td>
-            </tr>
-            {% endfor %}
-=======
             <% agendamentos.forEach(agendamento => { %>
             <tr>
               <td><%= agendamento.id %></td>
               <td><%= agendamento.nome %></td>
               <td><%= agendamento.telefone %></td>
-              <td><%= agendamento.servicoAgendado ? agendamento.servicoAgendado.nome : 'N/A' %></td>
-              <td><%= new Date(agendamento.data).toLocaleDateString('pt-BR') %></td>
+              <td>
+                <%= agendamento.servicoAgendado ?
+                agendamento.servicoAgendado.nome : 'N/A' %>
+              </td>
+              <td>
+                <%= new Date(agendamento.data).toLocaleDateString('pt-BR') %>
+              </td>
               <td><%= agendamento.hora %></td>
             </tr>
             <% }); %>
->>>>>>> origin/master
           </tbody>
         </table>
       </div>
     </main>
   </body>
-<<<<<<< HEAD
 </html>
-=======
-</html>
->>>>>>> origin/master

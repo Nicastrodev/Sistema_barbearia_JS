@@ -21,7 +21,7 @@ const Agendamento = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    // Nova coluna para associação com Servico
+    // Adicione a nova coluna servicoId para a associação
     servicoId: {
       type: DataTypes.INTEGER,
       references: {
@@ -30,17 +30,17 @@ const Agendamento = sequelize.define(
       },
     },
     data: {
-      type: DataTypes.DATEONLY, // Armazena apenas a data (YYYY-MM-DD)
+      type: DataTypes.DATEONLY,
       allowNull: false,
     },
     hora: {
-      type: DataTypes.STRING, // Armazena a hora como "HH:MM"
+      type: DataTypes.STRING,
       allowNull: false,
     },
   },
   {
     tableName: "agendamentos",
-    timestamps: false, // Desativa createdAt e updatedAt
+    timestamps: false,
   }
 );
 

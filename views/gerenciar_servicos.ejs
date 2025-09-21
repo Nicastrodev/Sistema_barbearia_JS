@@ -11,8 +11,6 @@
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Roboto:wght@300;400;500;700&display=swap"
       rel="stylesheet"
     />
-<<<<<<< HEAD
-=======
     <style>
       .interval-list-container {
         margin-top: 2rem;
@@ -48,7 +46,6 @@
         background-color: #c82333;
       }
     </style>
->>>>>>> origin/master
   </head>
   <body>
     <nav class="navbar">
@@ -58,28 +55,17 @@
         >
         <div class="nav-links">
           <a href="/agendamentos" class="nav-link">📅 Agendamentos</a>
-<<<<<<< HEAD
-          <a href="/logout" class="logout-btn">🚪 Sair</a>
-=======
           <a href="/logout" class="logout-btn">Sair</a>
->>>>>>> origin/master
         </div>
       </div>
     </nav>
 
     <main class="container">
       <div class="form-card">
-<<<<<<< HEAD
-        <h1>🛠️ Gerenciar Serviços e Horários</h1>
-
-        <div class="section-container">
-          <h2>Adicionar Novo Serviço</h2>
-=======
         <h1>🛠️ Gerenciar Serviços, Horários e Intervalos</h1>
 
         <br class="section-container">
           <h2>➕ Adicionar Novo Serviço</h2>
->>>>>>> origin/master
           <form
             method="POST"
             action="/gerenciar-servicos"
@@ -97,10 +83,7 @@
                 id="preco"
                 name="preco"
                 step="0.01"
-<<<<<<< HEAD
-=======
                 min="0"
->>>>>>> origin/master
                 required
               />
             </div>
@@ -113,11 +96,6 @@
                 placeholder="Ex: Máquina e tesoura, finalização..."
               />
             </div>
-<<<<<<< HEAD
-            <button type="submit" class="btn-primary">Adicionar Serviço</button>
-          </form>
-
-=======
             <div class="form-group">
               <label for="duracao">Duração (em minutos):</label>
               <input
@@ -132,7 +110,6 @@
             <button type="submit" class="btn-primary">Adicionar Serviço</button>
           </form>
         </br>
->>>>>>> origin/master
           <hr class="separator" />
 
           <h2>Serviços Atuais</h2>
@@ -169,28 +146,19 @@
         </div>
 
         <div class="section-container">
-<<<<<<< HEAD
-          <h2>Gerenciar Horários de Atendimento</h2>
-=======
     <h2 class="title-small">Gerenciar Horários de Atendimento</h2>
     <br>
->>>>>>> origin/master
           <form id="horarioForm" onsubmit="salvarHorarios(event)">
             <% Object.keys(configuracoes).forEach(dia => { const config =
             configuracoes[dia]; %>
             <div class="form-group dia-semana">
               <label class="switch">
-<<<<<<< HEAD
-                <input type="checkbox" name="dia" value="<%= dia %>" <%=
-                config.aberto ? 'checked' : '' %>>
-=======
                 <input
                   type="checkbox"
                   name="dia"
                   value="<%= dia %>"
                   <%= config.aberto ? 'checked' : '' %>
                 />
->>>>>>> origin/master
                 <span class="slider round"></span>
               </label>
               <span class="dia-label"><%= dia %></span>
@@ -216,8 +184,6 @@
             </button>
           </form>
         </div>
-<<<<<<< HEAD
-=======
 
         <hr class="separator" />
 
@@ -272,7 +238,6 @@
             </div>
           </div>
         </div>
->>>>>>> origin/master
       </div>
     </main>
 
@@ -321,8 +286,4 @@
       }
     </script>
   </body>
-<<<<<<< HEAD
 </html>
-=======
-</html>
->>>>>>> origin/master

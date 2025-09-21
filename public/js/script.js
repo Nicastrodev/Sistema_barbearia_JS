@@ -1,35 +1,10 @@
-// =================================================================
-// SCRIPT.JS FINAL - Barbearia Elite
-// =================================================================
-
 document.addEventListener("DOMContentLoaded", () => {
   const dataInput = document.getElementById("data");
-<<<<<<< HEAD
-=======
   const servicoSelect = document.getElementById("servico");
->>>>>>> origin/master
   const horaSelect = document.getElementById("hora");
   const telefoneInput = document.getElementById("telefone");
 
   // --- LÓGICA PARA ATUALIZAR HORÁRIOS DISPONÍVEIS ---
-<<<<<<< HEAD
-  if (dataInput && horaSelect) {
-    // Define a data mínima como hoje para não poder agendar no passado
-    const hoje = new Date().toISOString().split("T")[0];
-    dataInput.setAttribute("min", hoje);
-
-    // Adiciona o listener para o evento de 'change' (quando a data é selecionada)
-    dataInput.addEventListener("change", async () => {
-      const dataSelecionada = dataInput.value;
-
-      // Mostra um feedback de "Carregando..."
-      horaSelect.innerHTML = '<option value="">Carregando...</option>';
-      horaSelect.disabled = true;
-
-      if (!dataSelecionada) {
-        horaSelect.innerHTML =
-          '<option value="">Selecione a data primeiro...</option>';
-=======
   if (dataInput && horaSelect && servicoSelect) {
     const hoje = new Date().toISOString().split("T")[0];
     dataInput.setAttribute("min", hoje);
@@ -45,45 +20,31 @@ document.addEventListener("DOMContentLoaded", () => {
       horaSelect.disabled = true;
 
       if (!dataSelecionada || !servicoId) {
-        horaSelect.innerHTML = '<option value="">Selecione a data e o serviço...</option>';
->>>>>>> origin/master
+        horaSelect.innerHTML =
+          '<option value="">Selecione a data e o serviço...</option>';
         return;
       }
 
       try {
-<<<<<<< HEAD
-        // Busca na nossa API os horários disponíveis para a data selecionada
-        const response = await fetch(`/api/horarios/${dataSelecionada}`);
-=======
-        const response = await fetch(`/api/horarios/${dataSelecionada}/${servicoId}`);
->>>>>>> origin/master
+        const response = await fetch(
+          `/api/horarios/${dataSelecionada}/${servicoId}`
+        );
+
         if (!response.ok) {
           throw new Error("Erro ao buscar horários no servidor.");
         }
+
         const horarios = await response.json();
 
-<<<<<<< HEAD
-        // Limpa o select antes de adicionar as novas opções
         horaSelect.innerHTML = "";
 
         if (horarios.length === 0) {
-          // Se a lista de horários estiver vazia
           horaSelect.innerHTML =
             '<option value="">Nenhum horário disponível</option>';
           horaSelect.disabled = true;
         } else {
-          // Se houver horários, preenche o menu
           horaSelect.innerHTML =
             '<option value="">Selecione o horário...</option>';
-=======
-        horaSelect.innerHTML = "";
-
-        if (horarios.length === 0) {
-          horaSelect.innerHTML = '<option value="">Nenhum horário disponível</option>';
-          horaSelect.disabled = true;
-        } else {
-          horaSelect.innerHTML = '<option value="">Selecione o horário...</option>';
->>>>>>> origin/master
           horarios.forEach((hora) => {
             const option = document.createElement("option");
             option.value = hora;
@@ -94,47 +55,48 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       } catch (error) {
         console.error("Falha ao buscar horários:", error);
-<<<<<<< HEAD
         horaSelect.innerHTML =
           '<option value="">Erro ao carregar horários</option>';
         horaSelect.disabled = true;
       }
-    });
-=======
-        horaSelect.innerHTML = '<option value="">Erro ao carregar horários</option>';
-        horaSelect.disabled = true;
-      }
     }
->>>>>>> origin/master
   }
 
   // --- MÁSCARA PARA TELEFONE ---
-  if (telefoneInput) {
-    telefoneInput.addEventListener("input", (e) => {
-      let value = e.target.value.replace(/\D/g, "");
-<<<<<<< HEAD
-      value = value.substring(0, 11); // Limita a 11 dígitos
-=======
-      value = value.substring(0, 11);
->>>>>>> origin/master
-      if (value.length > 2) {
-        value = `(${value.substring(0, 2)}) ${value.substring(2)}`;
-      }
-      if (value.length > 9) {
-<<<<<<< HEAD
-        value = `${value.substring(0, 9)}-${value.substring(9)}`;
-=======
-        value = `${value.substring(0, 9)}-${value.substring(9, 13)}`;
->>>>>>> origin/master
-      }
-      e.target.value = value;
-    });
-  }
-<<<<<<< HEAD
-=======
+if (telefoneInput) {
+  telefoneInput.addEventListener("input", (e) => {
+    // 1. Limpa o valor, mantendo apenas os dígitos
+    let value = e.target.value.replace(/\D/g, "");
 
+    // 2. Limita o total de dígitos a 11 (máximo para celular com DDD)
+    value = value.substring(0, 11);
+
+    // 3. Aplica a formatação de forma inteligente
+    if (value.length > 10) {
+      // Formato para celular com 9º dígito: (XX) 9XXXX-XXXX
+      value = value.replace(/^(\d{2})(\d{5})(\d{4}).*/, "($1) $2-$3");
+
+    } else if (value.length > 6) {
+      // Formato para telefone fixo: (XX) XXXX-XXXX
+      value = value.replace(/^(\d{2})(\d{4})(\d{0,4}).*/, "($1) $2-$3");
+
+    } else if (value.length > 2) {
+      // Formato para quando está digitando o DDD
+      value = value.replace(/^(\d{2})(\d*)/, "($1) $2");
+      
+    } else if (value.length > 0) {
+      // Formato para quando está digitando o DDD
+      value = value.replace(/^(\d*)/, "($1");
+    }
+
+    // 4. Atualiza o valor no campo
+    e.target.value = value;
+  });
+}
   // --- LÓGICA PARA CANCELAR AGENDAMENTO ---
-  const formCancelamento = document.querySelector('form[action="/cancelar-agendamento"]');
+  const formCancelamento = document.querySelector(
+    'form[action="/cancelar-agendamento"]'
+  );
   if (formCancelamento) {
     formCancelamento.addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -142,29 +104,27 @@ document.addEventListener("DOMContentLoaded", () => {
       const idParaCancelar = document.getElementById("id_cancelar").value;
 
       try {
-  const response = await fetch("/cancelar-agendamento", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ id_cancelar: idParaCancelar }),
-  });
-  
-  // Linha adicionada: VERIFICA se a resposta foi bem-sucedida
-  if (!response.ok) {
-    throw new Error(`Erro na requisição: ${response.status}`);
-  }
+        const response = await fetch("/cancelar-agendamento", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id_cancelar: idParaCancelar }),
+        });
 
-  const result = await response.json();
+        if (!response.ok) {
+          throw new Error(`Erro na requisição: ${response.status}`);
+        }
 
-  if (result.success) {
-    window.location.href = "/cancelamento_confirmado/sucesso";
-  } else {
-    window.location.href = "/cancelamento_confirmado/nao_encontrado";
-  }
-} catch (error) {
-  console.error("Erro ao cancelar agendamento:", error);
-  window.location.href = "/cancelamento_confirmado/erro";
-}
+        const result = await response.json();
+
+        if (result.success) {
+          window.location.href = "/cancelamento_confirmado/sucesso";
+        } else {
+          window.location.href = "/cancelamento_confirmado/nao_encontrado";
+        }
+      } catch (error) {
+        console.error("Erro ao cancelar agendamento:", error);
+        window.location.href = "/cancelamento_confirmado/erro";
+      }
     });
   }
->>>>>>> origin/master
 });
