@@ -21,7 +21,6 @@ const Agendamento = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    // Adicione a nova coluna servicoId para a associação
     servicoId: {
       type: DataTypes.INTEGER,
       references: {
@@ -41,6 +40,12 @@ const Agendamento = sequelize.define(
   {
     tableName: "agendamentos",
     timestamps: false,
+    indexes: [
+      {
+        unique: true,
+        fields: ["data", "hora", "servicoId"], // previne duplicidade
+      },
+    ],
   }
 );
 
