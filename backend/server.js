@@ -12,7 +12,7 @@ const sequelize = require("./db");
 const Agendamento = require("./models/Agendamento");
 const Servico = require("./models/Servico");
 const HorarioConfiguracao = require("./models/HorarioConfiguracao");
-const Intervalo = require("./models/Intervalo"); // CORREÇÃO: Certifique-se de que esta linha está aqui!
+const Intervalo = require("./models/Intervalo");
 
 // =================================================================
 // ADICIONE AS ASSOCIAÇÕES AQUI
@@ -72,40 +72,44 @@ app.get("/", async (req, res) => {
   }
 });
 
-// Rota principal (POST): Cria um novo agendamento
 // <<< INÍCIO DA MUDANÇA >>>
-// Esta rota foi atualizada com a lógica de verificação e tratamento de erro do arquivo agendar.js
+// Rota principal (POST): Cria um novo agendamento - AGORA RESPONDENDO COM JSON
 app.post("/", async (req, res) => {
   try {
-    const { nome, telefone, servicoId, data, hora } = req.body; // 1. ADICIONADO: Verificação de duplicidade antes de tentar criar
+    const { nome, telefone, servicoId, data, hora } = req.body;
 
+    // 1. Verificação de duplicidade
     const existente = await Agendamento.findOne({
       where: { data, hora, servicoId },
     });
 
     if (existente) {
-      // Se o horário já existe, envia uma mensagem de erro clara
-      return res
-        .status(409)
-        .send("Este horário já foi agendado. Por favor, escolha outro.");
-    } // Validação dos 20 minutos de antecedência
+      return res.status(409).json({
+        sucesso: false,
+        mensagem: "Este horário já foi agendado. Por favor, escolha outro.",
+      });
+    }
 
+    // 2. Validação dos 20 minutos de antecedência
     const dataHoraAgendamento = new Date(`${data}T${hora}:00`);
     const agora = new Date();
     const diferencaEmMinutos =
       (dataHoraAgendamento.getTime() - agora.getTime()) / (1000 * 60);
 
     if (diferencaEmMinutos < 20) {
-      return res
-        .status(400)
-        .send(
-          "O agendamento deve ser feito com no mínimo 20 minutos de antecedência."
-        );
-    } // Busca o nome do serviço para a confirmação
+      return res.status(400).json({
+        sucesso: false,
+        mensagem:
+          "O agendamento deve ser feito com no mínimo 20 minutos de antecedência.",
+      });
+    }
 
+    // 3. Busca o serviço e cria o agendamento
     const servico = await Servico.findByPk(servicoId);
     if (!servico) {
-      return res.status(400).send("Serviço não encontrado.");
+      return res
+        .status(404)
+        .json({ sucesso: false, mensagem: "Serviço não encontrado." });
     }
 
     const novoAgendamento = await Agendamento.create({
@@ -117,21 +121,24 @@ app.post("/", async (req, res) => {
       data,
       hora,
     });
-    res.redirect(
-      `/confirmacao?nome=${nome}&servico=${servico.nome}&data=${data}&hora=${hora}&id=${novoAgendamento.id}`
-    );
+
+    // 4. Resposta de SUCESSO com JSON, incluindo a URL de confirmação
+    const urlConfirmacao = `/confirmacao?nome=${nome}&servico=${servico.nome}&data=${data}&hora=${hora}&id=${novoAgendamento.id}`;
+    return res.status(200).json({ sucesso: true, redirectUrl: urlConfirmacao });
   } catch (error) {
-    console.error("Erro ao criar agendamento:", error); // 2. ADICIONADO: Captura específica do erro de duplicidade (condição de corrida)
+    console.error("Erro ao criar agendamento:", error);
 
     if (error.name === "SequelizeUniqueConstraintError") {
-      return res
-        .status(409) // 409 significa "Conflito"
-        .send(
-          "Este horário acabou de ser agendado por outra pessoa. Por favor, escolha outro."
-        );
-    } // Mantém um erro genérico para outros problemas inesperados
+      return res.status(409).json({
+        sucesso: false,
+        mensagem:
+          "Este horário acabou de ser agendado por outra pessoa. Por favor, escolha outro.",
+      });
+    }
 
-    res.status(500).send("Erro ao processar o agendamento.");
+    return res
+      .status(500)
+      .json({ sucesso: false, mensagem: "Erro interno no servidor." });
   }
 });
 // <<< FIM DA MUDANÇA >>>
