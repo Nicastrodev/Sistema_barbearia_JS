@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const servicoSelect = document.getElementById("servico");
   const horaSelect = document.getElementById("hora");
   const telefoneInput = document.getElementById("telefone");
+  const msgErro = document.getElementById("mensagem-erro");
 
   // --- LOGICA PARA ADICIONAR BARREIRA PARA 2 AGENDAMENTOS AO MESMO TEMPO ---
   async function enviarAgendamento(dados) {
@@ -17,18 +18,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (!response.ok) {
         if (response.status === 409) {
-          alert(result.mensagem); // horário duplicado
+          msgErro.textContent =
+            result.mensagem || "Este horário já foi preenchido. Escolha outro.";
+          msgErro.style.display = "block";
         } else {
-          alert("Erro ao agendar. Tente novamente.");
+          msgErro.textContent = "Erro ao agendar. Tente novamente.";
+          msgErro.style.display = "block";
         }
         return;
       }
 
-      alert(result.mensagem); // sucesso
-      window.location.href = "/agendamento_confirmado"; // ou página de sucesso
+      window.location.href = "/agendamento_confirmado";
     } catch (err) {
       console.error(err);
-      alert("Erro na conexão. Tente novamente.");
+      msgErro.textContent = "Erro na conexão. Tente novamente.";
+      msgErro.style.display = "block";
     }
   }
 
@@ -93,31 +97,23 @@ document.addEventListener("DOMContentLoaded", () => {
   // --- MÁSCARA PARA TELEFONE ---
   if (telefoneInput) {
     telefoneInput.addEventListener("input", (e) => {
-      // 1. Limpa o valor, mantendo apenas os dígitos
       let value = e.target.value.replace(/\D/g, "");
-
-      // 2. Limita o total de dígitos a 11 (máximo para celular com DDD)
       value = value.substring(0, 11);
 
-      // 3. Aplica a formatação de forma inteligente
       if (value.length > 10) {
-        // Formato para celular com 9º dígito: (XX) 9XXXX-XXXX
         value = value.replace(/^(\d{2})(\d{5})(\d{4}).*/, "($1) $2-$3");
       } else if (value.length > 6) {
-        // Formato para telefone fixo: (XX) XXXX-XXXX
         value = value.replace(/^(\d{2})(\d{4})(\d{0,4}).*/, "($1) $2-$3");
       } else if (value.length > 2) {
-        // Formato para quando está digitando o DDD
         value = value.replace(/^(\d{2})(\d*)/, "($1) $2");
       } else if (value.length > 0) {
-        // Formato para quando está digitando o DDD
         value = value.replace(/^(\d*)/, "($1");
       }
 
-      // 4. Atualiza o valor no campo
       e.target.value = value;
     });
   }
+
   // --- LÓGICA PARA CANCELAR AGENDAMENTO ---
   const formCancelamento = document.querySelector(
     'form[action="/cancelar-agendamento"]'

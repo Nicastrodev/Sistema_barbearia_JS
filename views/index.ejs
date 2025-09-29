@@ -11,6 +11,38 @@
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Roboto:wght@300;400;500;700&display=swap"
       rel="stylesheet"
     />
+    <style>
+      /* Estilo da mensagem de erro/informação dentro do formulário */
+      #mensagem-erro {
+        display: none;
+        background-color: #ffdddd; /* tom claro de vermelho */
+        border: 1px solid #ff5c5c; /* borda mais forte pra evidenciar */
+        color: #a80000; /* texto vermelho escuro */
+        padding: 12px;
+        border-radius: 5px;
+        margin-bottom: 15px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        text-align: center;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      /* opcional: efeito para desaparecer após um tempo */
+      .mostrar {
+        animation: fadeInOut 0.3s ease-in-out;
+      }
+
+      @keyframes fadeInOut {
+        from {
+          opacity: 0;
+          transform: translateY(-5px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
   </head>
   <body>
     <nav class="navbar">
@@ -35,6 +67,9 @@
         <h2>📅 Agendar Horário</h2>
 
         <form action="/" method="POST" id="form-agendamento">
+          <!-- Mensagem de erro aparece aqui -->
+          <div id="mensagem-erro"></div>
+
           <div class="form-group">
             <label for="nome">👤 Nome Completo:</label>
             <input
@@ -114,7 +149,6 @@
     </main>
 
     <script src="/js/script.js"></script>
-
     <script src="/js/form-agendamento.js"></script>
   </body>
 </html>
