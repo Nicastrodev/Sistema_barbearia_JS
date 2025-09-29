@@ -40,7 +40,8 @@ router.post("/agendar", async (req, res) => {
     if (error.name === "SequelizeUniqueConstraintError") {
       return res.status(409).json({
         sucesso: false,
-        mensagem: "Esse horário já foi agendado. Escolha outro.",
+        mensagem:
+          "O horário solicitado foi agendado por outra pessoa. Atualize a página e selecione outro horário dísponivel.",
       });
     }
 
