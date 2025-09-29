@@ -1,6 +1,4 @@
 // public/js/form-agendamento.js
-console.log("✅ form-agendamento.js carregado!");
-
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("form-agendamento");
 
