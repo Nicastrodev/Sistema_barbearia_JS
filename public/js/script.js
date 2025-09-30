@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!response.ok) {
         if (response.status === 409) {
           msgErro.textContent =
-            result.mensagem || "Este horário já foi preenchido. Escolha outro.";
+            result.mensagem || "O horário solicitado foi agendado por outra pessoa. Atualize a página e selecione outro horário dísponivel.";
           msgErro.style.display = "block";
         } else {
           msgErro.textContent = "Erro ao agendar. Tente novamente.";
